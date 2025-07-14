@@ -1,4 +1,3 @@
-import React from "react";
 import { createStackNavigator } from "@react-navigation/stack";
 import ListarConsultorio from "../../../Screen/Consultorios/ListarConsultorio";
 import DetalleConsultorio from "../../../Screen/Consultorios/DetalleConsultorio";
