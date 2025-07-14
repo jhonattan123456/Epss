@@ -1,46 +1,47 @@
-import { View, Text, StyleSheet, ActivityIndicator, Alert } from "react-native";
 import React, { useEffect, useState } from "react";
+import {
+  View,
+  Text,
+  StyleSheet,
+  ActivityIndicator,
+  Alert,
+} from "react-native";
 import AsyncStorage from "@react-native-async-storage/async-storage";
 import BottonComponent from "../../components/BottonComponent";
-import api from "../../src/Services/conexion";
-import { logoutUser } from "../../src/Services/AuthService";
+import api from "../../Src/Services/conexion";
+import { logoutUser } from "../../Src/Services/AuthService";
 
-export default function PerfilScreen({ navigation }) {
+export default function PantallaPerfil({ navigation }) {
   const [usuario, setUsuario] = useState(null);
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
-    const cargarPefil = async () => {
+    const cargarPerfil = async () => {
       try {
         const token = await AsyncStorage.getItem("userToken");
+
         if (!token) {
-          console.log("No se encontró el token de usuario");
+          console.log("No se encontró token, redirigiendo al login");
           return;
         }
 
         console.log("Intentando cargar perfil con token:", token);
-        const response = await api.get("/me");
-        console.log("Perfil cargado exitosamente:", response.data);
+        const response = await api.get("/listarUsuarios");
+        console.log("Respuesta del perfil:", response.data);
         setUsuario(response.data);
       } catch (error) {
-        console.log("Error al cargar el perfil:", error);
+        console.error("Error al cargar perfil:", error);
 
         if (error.isAuthError || error.shouldRedirectToLogin) {
-          console.log("Error de autenticación, redirigiendo a login...");
+          console.log("Error de autenticación manejado por el interceptor");
           return;
         }
+
         if (error.response) {
-          console.log(
-            "Error respinse: ",
-            error.response.status,
-            error.response.data
-          );
+          console.log("Error del servidor:", error.response.status);
           Alert.alert(
-            "Error al servidor",
-            `Error ${error.response.status}: ${
-              error.response.data?.message ||
-              "Ocurrió un error al cargar el perfil."
-            }`,
+            "Error del servidor",
+            `Error ${error.response.status}: ${error.response.data?.message || "No se pudo cargar el perfil"}`,
             [
               {
                 text: "OK",
@@ -53,7 +54,7 @@ export default function PerfilScreen({ navigation }) {
         } else if (error.request) {
           Alert.alert(
             "Error de conexión",
-            "No se pudo conectar al servidor. Por favor, verifica tu conexión a internet.",
+            "No se pudo conectar con el servidor. Verifica tu conexión a internet.",
             [
               {
                 text: "OK",
@@ -81,13 +82,14 @@ export default function PerfilScreen({ navigation }) {
         setLoading(false);
       }
     };
-    cargarPefil();
+
+    cargarPerfil();
   }, []);
 
   if (loading) {
     return (
-      <View style={styles.loadingContainer}>
-        <ActivityIndicator size="large" color="#0000ff" />
+      <View style={styles.container}>
+        <ActivityIndicator size="large" color="#6de2b4" />
       </View>
     );
   }
@@ -97,9 +99,7 @@ export default function PerfilScreen({ navigation }) {
       <View style={styles.container}>
         <Text style={styles.title}>Perfil de Usuario</Text>
         <View style={styles.ContainerPerfil}>
-          <Text style={styles.errorPerfil}>
-            No se pudo cargar el perfil del usuario.
-          </Text>
+          <Text style={styles.errorText}>No se pudo cargar la información del perfil</Text>
         </View>
       </View>
     );
@@ -108,19 +108,23 @@ export default function PerfilScreen({ navigation }) {
   return (
     <View style={styles.container}>
       <Text style={styles.title}>Perfil de Usuario</Text>
-      <View style={styles.ContainerPerfil}>
-        <Text style={styles.profileText}>Nombre: {usuario.user.name || "no disponible"}</Text>
-        <Text style={styles.profileText}>Correo Electrónico: {usuario.user.email || "no disponible"}</Text>
-        <Text style={styles.profileText}>Role: {usuario.user.role || "no disponible"}</Text>
 
-        <BottonComponent title="Editar Perfil" onPress={() => {}} />
-        <BottonComponent
-          title="Cerrar Sesión"
-          onPress={async () => {
-            await logoutUser();
-          }}
-        />
+      <View style={styles.ContainerPerfil}>
+        <Text style={styles.profileText}>
+          Nombre: {usuario.user?.name || "No disponible"}
+        </Text>
+        <Text style={styles.profileText}>
+          Email: {usuario.user?.email || "No disponible"}
+        </Text>
       </View>
+
+      <BottonComponent title="Editar Perfil" onPress={() => {}} />
+      <BottonComponent
+        title="Cerrar Sesión"
+        onPress={async () => {
+            await logoutUser();
+        }}
+      />
     </View>
   );
 }
@@ -128,39 +132,69 @@ export default function PerfilScreen({ navigation }) {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    padding: 20,
-    backgroundColor: "#f5f5f5",
+    padding: 25,
+    backgroundColor: "#000",
+    justifyContent: "center",
   },
   title: {
-    fontSize: 24,
     fontWeight: "bold",
+    fontSize: 28,
+    marginBottom: 30,
     textAlign: "center",
-    marginBottom: 20,
-    color: "#333",
+    color: "#00b4ff",
+    textShadowColor: "#0077ff",
+    textShadowOffset: { width: 0, height: 0 },
+    textShadowRadius: 10,
   },
   ContainerPerfil: {
-    backgroundColor: "#fff",
+    width: "100%",
     padding: 20,
+    backgroundColor: "#111",
     borderRadius: 10,
-    elevation: 4,
-    shadowColor: "#000",
-    shadowOffset: { width: 0, height: 2 },
-    shadowOpacity: 0.2,
-    shadowRadius: 4,
+    borderWidth: 1,
+    borderColor: "#00b4ff",
+    shadowColor: "#00b4ff",
+    shadowOffset: { width: 0, height: 0 },
+    shadowOpacity: 0.3,
+    shadowRadius: 10,
+    elevation: 5,
+    marginBottom: 30,
   },
   profileText: {
-    fontSize: 16,
-    marginBottom: 10,
-    color: "#555",
+    fontSize: 18,
+    color: "#fff",
+    marginBottom: 15,
+    textShadowColor: "rgba(0, 180, 255, 0.3)",
+    textShadowOffset: { width: 0, height: 0 },
+    textShadowRadius: 3,
   },
-  errorPerfil: {
-    fontSize: 16,
-    color: "red",
+  errorText: {
+    fontSize: 18,
+    color: "#ff4d4d",
     textAlign: "center",
+    textShadowColor: "rgba(255, 77, 77, 0.3)",
+    textShadowOffset: { width: 0, height: 0 },
+    textShadowRadius: 3,
   },
-  loadingContainer: {
-    flex: 1,
-    justifyContent: "center",
-    alignItems: "center",
+  neonButton: {
+    backgroundColor: "transparent",
+    borderWidth: 2,
+    borderColor: "#00b4ff",
+    shadowColor: "#00b4ff",
+    shadowOffset: { width: 0, height: 0 },
+    shadowOpacity: 0.8,
+    shadowRadius: 10,
+    elevation: 10,
+    marginBottom: 15,
+  },
+  neonButtonSecondary: {
+    backgroundColor: "transparent",
+    borderWidth: 2,
+    borderColor: "#ff4d4d",
+    shadowColor: "#ff4d4d",
+    shadowOffset: { width: 0, height: 0 },
+    shadowOpacity: 0.8,
+    shadowRadius: 10,
+    elevation: 10,
   },
 });

@@ -1,19 +1,19 @@
 import React from "react";
 import { createStackNavigator } from "@react-navigation/stack";
-import ListarPaciente from "../../../Screen/Pacientes/ListarPaciente";
-import DetallePaciente from "../../../Screen/Pacientes/DetallePaciente";
-import EditarPaciente from "../../../Screen/Pacientes/EditarPaciente";
+import ListarEspecialidades from "../../../Screen/Especialidades/ListarEspecialidades";
+import DetalleEspecialidades from "../../../Screen/Especialidades/DetalleEspecialidades";
+import EditarEspecialidades from "../../../Screen/Especialidades/EditarEspecialidades";
 
 const Stack = createStackNavigator();
 
-export default function PacienteStack () {
+export default function EspecialidadesStack () {
     return (
         <Stack.Navigator>
             <Stack.Screen
-                name= "ListarPaciente"
-                component={ListarPaciente}
+                name= "ListarEspecialidades"
+                component={ListarEspecialidades}
                 options={{
-                    title: "Paciente",
+                    title: "Especialidades",
                     headerStyle: { // <-- Estilo de encabezado para esta pantalla
                         backgroundColor: '#1da294', // Color azul
                     },
@@ -24,10 +24,10 @@ export default function PacienteStack () {
                 }}
             />
             <Stack.Screen
-                name= "DetallePaciente"
-                component={DetallePaciente}
+                name= "DetalleEspecialidades"
+                component={DetalleEspecialidades}
                 options={{
-                    title: "Detalle Paciente",
+                    title: "Detalle Especialidades",
                     headerStyle: { // <-- Estilo de encabezado para esta pantalla
                         backgroundColor: '#1da294', // Mismo color para consistencia
                     },
@@ -38,10 +38,10 @@ export default function PacienteStack () {
                 }}
             />
             <Stack.Screen
-                name= "EditarPaciente"
-                component={EditarPaciente}
+                name= "EditarEspecialidades"
+                component={EditarEspecialidades}
                 options={{
-                    title: "Nuevo/Editar Paciente",
+                    title: "Nuevo/Editar Especialidades",
                     headerStyle: { // <-- Estilo de encabezado para esta pantalla
                         backgroundColor: '#1da294', // Mismo color para consistencia
                     },

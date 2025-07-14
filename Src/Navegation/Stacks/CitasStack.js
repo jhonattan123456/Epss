@@ -1,19 +1,19 @@
 import React from "react";
 import { createStackNavigator } from "@react-navigation/stack";
-import ListarPaciente from "../../../Screen/Pacientes/ListarPaciente";
-import DetallePaciente from "../../../Screen/Pacientes/DetallePaciente";
-import EditarPaciente from "../../../Screen/Pacientes/EditarPaciente";
+import ListarCitas from "../../../Screen/Citas/ListarCitas";
+import DetalleCitas from "../../../Screen/Citas/DetalleCitas";
+import EditarCitas from "../../../Screen/Citas/EditarCitas";
 
 const Stack = createStackNavigator();
 
-export default function PacienteStack () {
+export default function CitasStack () {
     return (
         <Stack.Navigator>
             <Stack.Screen
-                name= "ListarPaciente"
-                component={ListarPaciente}
+                name= "ListarCitas"
+                component={ListarCitas}
                 options={{
-                    title: "Paciente",
+                    title: "Citas",
                     headerStyle: { // <-- Estilo de encabezado para esta pantalla
                         backgroundColor: '#1da294', // Color azul
                     },
@@ -24,10 +24,10 @@ export default function PacienteStack () {
                 }}
             />
             <Stack.Screen
-                name= "DetallePaciente"
-                component={DetallePaciente}
+                name= "DetalleCitas"
+                component={DetalleCitas}
                 options={{
-                    title: "Detalle Paciente",
+                    title: "Detalle citas",
                     headerStyle: { // <-- Estilo de encabezado para esta pantalla
                         backgroundColor: '#1da294', // Mismo color para consistencia
                     },
@@ -38,10 +38,10 @@ export default function PacienteStack () {
                 }}
             />
             <Stack.Screen
-                name= "EditarPaciente"
-                component={EditarPaciente}
+                name= "EditarCitas"
+                component={EditarCitas}
                 options={{
-                    title: "Nuevo/Editar Paciente",
+                    title: "Nuevo/Editar Citas",
                     headerStyle: { // <-- Estilo de encabezado para esta pantalla
                         backgroundColor: '#1da294', // Mismo color para consistencia
                     },

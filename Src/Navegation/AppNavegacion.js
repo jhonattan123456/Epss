@@ -1,8 +1,8 @@
 import { NavigationContainer } from "@react-navigation/native";
-import AuthNavigation from "./AuthNavegacion";
+import AuthNavegacion from "./AuthNavegacion";
 import NavegacionPrincipal from "./NavegacionPrincipal";
-import React, { useState, useEffect, useRef } from "react";
 import AsyncStorage from "@react-native-async-storage/async-storage";
+import React, { useState, useEffect, useRef, use } from "react";
 import { ActivityIndicator, View, StyleSheet, AppState } from "react-native";
 
 export default function AppNavegacion() {
@@ -14,14 +14,14 @@ export default function AppNavegacion() {
     try {
       const token = await AsyncStorage.getItem("userToken");
       setUserToken(token);
-    } catch (e) {
-      console.error("Error al cargar el token desde AsyncStorage:", e);
+    } catch (error) {
+      console.error("Error al cargar el token desde AsyncStorage:", error);
     } finally {
       setIsLoading(false);
     }
   };
   useEffect(() => {
-    loadToken(); //carga incial del token
+    loadToken(); // Cargar el token al iniciar la aplicación
   }, []);
 
   useEffect(() => {
@@ -30,8 +30,10 @@ export default function AppNavegacion() {
         appState.current.match(/inactive|background/) &&
         nextAppState === "active"
       ) {
-        console.log("App ha vuelto a primer plano, recargando el token...");
-        loadToken();
+        console.log(
+          "La aplicación ha vuelto al primer plano, verificando el token..."
+        );
+        loadToken(); // Recargar el token cuando la app vuelve al primer plano
       }
       appState.current = nextAppState;
     };
@@ -39,42 +41,41 @@ export default function AppNavegacion() {
       "change",
       handleAppStateChange
     );
-    return () => subscription?.remove();
+    return () => subscription.remove(); // Limpiar el listener al desmontar el componente
   }, []);
 
   useEffect(() => {
     if (!isLoading) {
-      const interval = setInterval(() => {
-        if (AppState.currentState === 'active') {
-          loadToken(); // recarga el token cada 5 minutos si la app está activa
-        }
-      }, 2000); // 2 segundos para pruebas, cambiar a 300000 para 5 minutos
-      return () => clearInterval(interval);
+        const interval = setInterval(() => {
+            if (AppState.currentState === "active") {
+                loadToken(); // Recargar el token si la app está activa
+            }
+        }, 2000);
+      return () => clearInterval(interval); // No renderizar nada mientras se carga el token
     }
   }, [isLoading]);
 
-  if (isLoading) {
+    if (isLoading) {
     return (
-      <View style={styles.loadingContainer}>
-        <ActivityIndicator size="large" color="#0000ff" />
+      <View style={Styles.loadingContainer}>
+        <ActivityIndicator size="large" color="#1da294" />
       </View>
     );
-  }
+    }
 
   return (
-    // NavigationContainer es el contenedor principal de navegación
-    // que debe envolver toda la aplicación de navegación.
     <NavigationContainer>
-      {userToken ? <NavegacionPrincipal /> : <AuthNavigation />}
+      {userToken ? <NavegacionPrincipal /> : <AuthNavegacion />}
     </NavigationContainer>
   );
 }
 
-const styles = StyleSheet.create({
-  loadingContainer: {  
+
+const Styles = StyleSheet.create({
+  loadingContainer: {
     flex: 1,
-    justifyContent: 'center',
-    alignItems: 'center',
-    backgroundColor: '#F5F7FA',
-    },
+    justifyContent: "center",
+    alignItems: "center",
+    backgroundColor: "#1da294",
+  },
 });

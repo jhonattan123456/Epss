@@ -1,4 +1,5 @@
 import { TouchableOpacity, Text, StyleSheet } from "react-native";
+
 export default function CustomButton({ title, onPress, style }) {
     return (
         <TouchableOpacity style={[styles.button, style]} onPress={onPress}>
@@ -9,7 +10,7 @@ export default function CustomButton({ title, onPress, style }) {
 
 const styles = StyleSheet.create({
     button: {
-        backgroundColor: "green",
+        backgroundColor: "#1da294",
         padding: 12,
         borderRadius: 8,
         alignItems: "center",
