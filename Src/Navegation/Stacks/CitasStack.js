@@ -6,51 +6,50 @@ import EditarCitas from "../../../Screen/Citas/EditarCitas";
 
 const Stack = createStackNavigator();
 
-export default function CitasStack () {
-    return (
-        <Stack.Navigator>
-            <Stack.Screen
-                name= "ListarCitas"
-                component={ListarCitas}
-                options={{
-                    title: "Citas",
-                    headerStyle: { // <-- Estilo de encabezado para esta pantalla
-                        backgroundColor: '#1da294', // Color azul
-                    },
-                    headerTintColor: '#fff', // Color blanco para el texto del título y el icono de retroceso
-                    headerTitleStyle: {
-                        fontWeight: 'bold', // Título en negrita
-                    },
-                }}
-            />
-            <Stack.Screen
-                name= "DetalleCitas"
-                component={DetalleCitas}
-                options={{
-                    title: "Detalle citas",
-                    headerStyle: { // <-- Estilo de encabezado para esta pantalla
-                        backgroundColor: '#1da294', // Mismo color para consistencia
-                    },
-                    headerTintColor: '#fff',
-                    headerTitleStyle: {
-                        fontWeight: 'bold',
-                    },
-                }}
-            />
-            <Stack.Screen
-                name= "EditarCitas"
-                component={EditarCitas}
-                options={{
-                    title: "Nuevo/Editar Citas",
-                    headerStyle: { // <-- Estilo de encabezado para esta pantalla
-                        backgroundColor: '#1da294', // Mismo color para consistencia
-                    },
-                    headerTintColor: '#fff',
-                    headerTitleStyle: {
-                        fontWeight: 'bold',
-                    },
-                }}
-            />
-        </Stack.Navigator>
-    );
+export default function CitasStack() {
+  return (
+    <Stack.Navigator
+      screenOptions={{
+        headerStyle: {
+          backgroundColor: '#89CFF0', // Azul pastel principal
+          elevation: 0, // Elimina sombra en Android
+          shadowOpacity: 0, // Elimina sombra en iOS
+        },
+        headerTintColor: '#fff',
+        headerTitleStyle: {
+          fontWeight: 'bold',
+          fontSize: 20,
+        },
+        headerTitleAlign: 'center',
+        cardStyle: {
+          backgroundColor: '#f5f9ff', // Fondo pastel claro para todas las pantallas
+        },
+      }}
+    >
+      <Stack.Screen
+        name="ListarCitas"
+        component={ListarCitas}
+        options={{
+          title: "Mis Citas",
+          headerBackTitleVisible: false,
+        }}
+      />
+      <Stack.Screen
+        name="DetalleCitas"
+        component={DetalleCitas}
+        options={{
+          title: "Detalle de Cita",
+          headerBackTitleVisible: false,
+        }}
+      />
+      <Stack.Screen
+        name="EditarCitas"
+        component={EditarCitas}
+        options={{
+          title: "Editar Cita",
+          headerBackTitleVisible: false,
+        }}
+      />
+    </Stack.Navigator>
+  );
 }

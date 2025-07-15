@@ -64,62 +64,79 @@ const EditarMedicos = ({ route, navigation }) => {
     };
 
     console.log('Médico guardado:', medico);
+    Alert.alert('Éxito', modoEdicion ? 'Médico actualizado' : 'Médico registrado');
     navigation.goBack();
   };
 
   return (
-    <ScrollView style={styles.container}>
+    <ScrollView contentContainerStyle={styles.container}>
       <Text style={styles.titulo}>
         {modoEdicion ? 'Editar Médico' : 'Nuevo Médico'}
       </Text>
 
+      <Text style={styles.label}>Nombre completo*</Text>
       <TextInput
         style={styles.input}
-        placeholder="Nombre completo*"
+        placeholder="Ej: Dr. Juan Pérez"
+        placeholderTextColor="#A7C7E7"
         value={nombre}
         onChangeText={setNombre}
       />
 
+      <Text style={styles.label}>Especialidad*</Text>
       <TextInput
         style={styles.input}
-        placeholder="Especialidad*"
+        placeholder="Seleccione una especialidad"
+        placeholderTextColor="#A7C7E7"
         value={especialidad}
         onChangeText={setEspecialidad}
       />
 
+      <Text style={styles.label}>Número de cédula*</Text>
       <TextInput
         style={styles.input}
-        placeholder="Número de cédula*"
+        placeholder="Ej: 12345678"
+        placeholderTextColor="#A7C7E7"
         value={cedula}
         onChangeText={setCedula}
         keyboardType="numeric"
       />
 
+      <Text style={styles.label}>Teléfono</Text>
       <TextInput
         style={styles.input}
-        placeholder="Teléfono"
+        placeholder="Ej: 555-1234567"
+        placeholderTextColor="#A7C7E7"
         value={telefono}
         onChangeText={setTelefono}
         keyboardType="phone-pad"
       />
 
+      <Text style={styles.label}>Correo electrónico</Text>
       <TextInput
         style={styles.input}
-        placeholder="Correo electrónico"
+        placeholder="Ej: medico@ejemplo.com"
+        placeholderTextColor="#A7C7E7"
         value={correo}
         onChangeText={setCorreo}
         keyboardType="email-address"
         autoCapitalize="none"
       />
 
+      <Text style={styles.label}>Horario de atención</Text>
       <TextInput
         style={styles.input}
-        placeholder="Horario de atención"
+        placeholder="Ej: Lunes a Viernes 8am-5pm"
+        placeholderTextColor="#A7C7E7"
         value={horario}
         onChangeText={setHorario}
       />
 
-      <TouchableOpacity style={styles.botonGuardar} onPress={handleGuardar}>
+      <TouchableOpacity 
+        style={styles.botonGuardar} 
+        onPress={handleGuardar}
+        activeOpacity={0.8}
+      >
         <Text style={styles.textoBoton}>
           {modoEdicion ? 'Actualizar Médico' : 'Registrar Médico'}
         </Text>
@@ -136,13 +153,15 @@ const EditarMedicos = ({ route, navigation }) => {
                 { text: 'Cancelar', style: 'cancel' },
                 { text: 'Eliminar', onPress: () => {
                   console.log('Médico eliminado ID:', id);
+                  Alert.alert('Éxito', 'Médico eliminado correctamente');
                   navigation.goBack();
                 }}
               ]
             );
           }}
+          activeOpacity={0.8}
         >
-          <Text style={styles.textoBoton}>Eliminar Médico</Text>
+          <Text style={styles.textoBotonEliminar}>Eliminar Médico</Text>
         </TouchableOpacity>
       )}
     </ScrollView>
@@ -151,79 +170,77 @@ const EditarMedicos = ({ route, navigation }) => {
 
 const styles = StyleSheet.create({
   container: {
-    flex: 1,
+    flexGrow: 1,
     padding: 20,
-    backgroundColor: '#000'
+    backgroundColor: '#f5f9ff'
   },
   titulo: {
     fontSize: 28,
     fontWeight: 'bold',
-    marginBottom: 30,
-    color: '#00b4ff',
+    marginBottom: 25,
+    color: '#89CFF0',
     textAlign: 'center',
-    textShadowColor: '#0077ff',
+    textShadowColor: 'rgba(137, 207, 240, 0.5)',
     textShadowOffset: { width: 0, height: 0 },
     textShadowRadius: 10
   },
+  label: {
+    color: '#555',
+    fontSize: 16,
+    fontWeight: '500',
+    marginBottom: 8,
+    marginLeft: 4
+  },
   input: {
-    backgroundColor: '#111',
+    backgroundColor: '#fff',
     borderWidth: 2,
-    borderColor: '#00b4ff',
+    borderColor: '#B5EAD7',
     borderRadius: 8,
     padding: 15,
     marginBottom: 20,
     fontSize: 16,
-    color: '#fff',
-    shadowColor: '#00b4ff',
-    shadowOffset: { width: 0, height: 0 },
+    color: '#555',
+    shadowColor: 'rgba(181, 234, 215, 0.3)',
+    shadowOffset: { width: 0, height: 2 },
     shadowOpacity: 0.5,
     shadowRadius: 5,
-    elevation: 5
+    elevation: 3
   },
   botonGuardar: {
-    backgroundColor: 'transparent',
-    borderWidth: 2,
-    borderColor: '#00b4ff',
-    padding: 15,
+    backgroundColor: '#89CFF0',
+    borderWidth: 0,
     borderRadius: 8,
+    padding: 16,
     alignItems: 'center',
     marginTop: 15,
-    marginBottom: 15,
-    shadowColor: '#00b4ff',
-    shadowOffset: { width: 0, height: 0 },
-    shadowOpacity: 0.8,
-    shadowRadius: 10,
-    elevation: 10
+    shadowColor: 'rgba(137, 207, 240, 0.5)',
+    shadowOffset: { width: 0, height: 4 },
+    shadowOpacity: 0.6,
+    shadowRadius: 8,
+    elevation: 6
   },
   botonEliminar: {
-    backgroundColor: 'transparent',
-    borderWidth: 2,
-    borderColor: '#ff4d4d',
-    padding: 15,
+    backgroundColor: '#FF9AA2',
+    borderWidth: 0,
     borderRadius: 8,
+    padding: 16,
     alignItems: 'center',
-    marginTop: 10,
-    shadowColor: '#ff4d4d',
-    shadowOffset: { width: 0, height: 0 },
-    shadowOpacity: 0.8,
-    shadowRadius: 10,
-    elevation: 10
+    marginTop: 15,
+    shadowColor: 'rgba(255, 154, 162, 0.5)',
+    shadowOffset: { width: 0, height: 4 },
+    shadowOpacity: 0.6,
+    shadowRadius: 8,
+    elevation: 6
   },
   textoBoton: {
-    color: '#00b4ff',
+    color: '#fff',
     fontSize: 18,
-    fontWeight: 'bold',
-    textShadowColor: 'rgba(0, 180, 255, 0.5)',
-    textShadowOffset: { width: 0, height: 0 },
-    textShadowRadius: 4
+    fontWeight: '600'
   },
   textoBotonEliminar: {
-    color: '#ff4d4d',
+    color: '#fff',
     fontSize: 18,
-    fontWeight: 'bold',
-    textShadowColor: 'rgba(255, 77, 77, 0.5)',
-    textShadowOffset: { width: 0, height: 0 },
-    textShadowRadius: 4
+    fontWeight: '600'
   }
 });
 

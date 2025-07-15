@@ -89,7 +89,7 @@ export default function PantallaPerfil({ navigation }) {
   if (loading) {
     return (
       <View style={styles.container}>
-        <ActivityIndicator size="large" color="#6de2b4" />
+        <ActivityIndicator size="large" color="#89CFF0" />
       </View>
     );
   }
@@ -118,12 +118,19 @@ export default function PantallaPerfil({ navigation }) {
         </Text>
       </View>
 
-      <BottonComponent title="Editar Perfil" onPress={() => {}} />
+      <BottonComponent 
+        title="Editar Perfil" 
+        onPress={() => {}} 
+        style={styles.primaryButton}
+        textStyle={styles.primaryButtonText}
+      />
       <BottonComponent
         title="Cerrar Sesión"
         onPress={async () => {
             await logoutUser();
         }}
+        style={styles.secondaryButton}
+        textStyle={styles.secondaryButtonText}
       />
     </View>
   );
@@ -133,7 +140,7 @@ const styles = StyleSheet.create({
   container: {
     flex: 1,
     padding: 25,
-    backgroundColor: "#000",
+    backgroundColor: "#f5f9ff",
     justifyContent: "center",
   },
   title: {
@@ -141,60 +148,68 @@ const styles = StyleSheet.create({
     fontSize: 28,
     marginBottom: 30,
     textAlign: "center",
-    color: "#00b4ff",
-    textShadowColor: "#0077ff",
+    color: "#89CFF0",
+    textShadowColor: "rgba(137, 207, 240, 0.5)",
     textShadowOffset: { width: 0, height: 0 },
     textShadowRadius: 10,
   },
   ContainerPerfil: {
     width: "100%",
     padding: 20,
-    backgroundColor: "#111",
-    borderRadius: 10,
-    borderWidth: 1,
-    borderColor: "#00b4ff",
-    shadowColor: "#00b4ff",
-    shadowOffset: { width: 0, height: 0 },
-    shadowOpacity: 0.3,
-    shadowRadius: 10,
+    backgroundColor: "#ffffff",
+    borderRadius: 12,
+    borderLeftWidth: 6,
+    borderLeftColor: "#89CFF0",
+    shadowColor: "rgba(181, 234, 215, 0.3)",
+    shadowOffset: { width: 0, height: 4 },
+    shadowOpacity: 0.5,
+    shadowRadius: 8,
     elevation: 5,
     marginBottom: 30,
   },
   profileText: {
     fontSize: 18,
-    color: "#fff",
+    color: "#555",
     marginBottom: 15,
-    textShadowColor: "rgba(0, 180, 255, 0.3)",
-    textShadowOffset: { width: 0, height: 0 },
-    textShadowRadius: 3,
+    lineHeight: 24
   },
   errorText: {
     fontSize: 18,
-    color: "#ff4d4d",
+    color: "#FF9AA2",
     textAlign: "center",
-    textShadowColor: "rgba(255, 77, 77, 0.3)",
-    textShadowOffset: { width: 0, height: 0 },
-    textShadowRadius: 3,
+    fontWeight: "500"
   },
-  neonButton: {
-    backgroundColor: "transparent",
-    borderWidth: 2,
-    borderColor: "#00b4ff",
-    shadowColor: "#00b4ff",
-    shadowOffset: { width: 0, height: 0 },
-    shadowOpacity: 0.8,
-    shadowRadius: 10,
-    elevation: 10,
+  primaryButton: {
+    backgroundColor: "#89CFF0",
+    borderWidth: 0,
+    borderRadius: 8,
+    padding: 16,
     marginBottom: 15,
+    shadowColor: "rgba(137, 207, 240, 0.5)",
+    shadowOffset: { width: 0, height: 4 },
+    shadowOpacity: 0.6,
+    shadowRadius: 8,
+    elevation: 6,
   },
-  neonButtonSecondary: {
-    backgroundColor: "transparent",
-    borderWidth: 2,
-    borderColor: "#ff4d4d",
-    shadowColor: "#ff4d4d",
-    shadowOffset: { width: 0, height: 0 },
-    shadowOpacity: 0.8,
-    shadowRadius: 10,
-    elevation: 10,
+  primaryButtonText: {
+    color: "#fff",
+    fontSize: 18,
+    fontWeight: "600"
   },
+  secondaryButton: {
+    backgroundColor: "#FF9AA2",
+    borderWidth: 0,
+    borderRadius: 8,
+    padding: 16,
+    shadowColor: "rgba(255, 154, 162, 0.5)",
+    shadowOffset: { width: 0, height: 4 },
+    shadowOpacity: 0.6,
+    shadowRadius: 8,
+    elevation: 6,
+  },
+  secondaryButtonText: {
+    color: "#fff",
+    fontSize: 18,
+    fontWeight: "600"
+  }
 });

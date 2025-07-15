@@ -4,8 +4,8 @@ import { View, Text, StyleSheet, TouchableOpacity, SafeAreaView, StatusBar, Dime
 import { AntDesign, FontAwesome6, Fontisto, MaterialIcons } from '@expo/vector-icons';
 import { useNavigation } from '@react-navigation/native';
 
-const { width } = Dimensions.get('window'); // Obtener el ancho de la pantalla para estilos responsivos
-const itemWidth = (width / 2) - 30; // 2 ítems por fila con margen
+const { width } = Dimensions.get('window'); 
+const itemWidth = (width / 2) - 30; 
 
 export default function Inicio() {
     const navigation = useNavigation();
@@ -21,7 +21,7 @@ export default function Inicio() {
                 {/* Encabezado */}
                 <View style={styles.header}>
                     <Text style={styles.headerTitle}>SE BIENVENIDO</Text>
-                    <Text style={styles.headerSubtitle}>A tu EPS de confianza</Text>
+                    <Text style={styles.headerTitle}>EPS Paso al Infierno</Text>
                     <Text style={styles.headerSubtitle}>Selecciona una opción</Text>
                     
                 </View>
@@ -64,7 +64,6 @@ export default function Inicio() {
                         <Text style={styles.gridItemText}>Pacientes</Text>
                     </TouchableOpacity>
                 </View>
-
             </View>
         </SafeAreaView>
     );
@@ -73,11 +72,11 @@ export default function Inicio() {
 const styles = StyleSheet.create({
     safeArea: {
         flex: 1,
-        backgroundColor: '#000',
+        backgroundColor: '#f5f9ff', // Azul pastel muy claro
     },
     container: {
         flex: 1,
-        backgroundColor: '#000',
+        backgroundColor: '#f5f9ff',
         padding: 20,
     },
     header: {
@@ -88,16 +87,16 @@ const styles = StyleSheet.create({
     headerTitle: {
         fontSize: 32,
         fontWeight: '800',
-        color: '#00b4ff',
+        color: '#FF204E', 
         marginBottom: 5,
-        textShadowColor: '#0077ff',
+        textShadowColor: 'rgba(137, 207, 240, 0.5)',
         textShadowOffset: { width: 0, height: 0 },
         textShadowRadius: 10,
     },
     headerSubtitle: {
         fontSize: 18,
-        color: '#7fcdff',
-        textShadowColor: 'rgba(0, 180, 255, 0.3)',
+        color: '#A7C7E7', // Azul pastel más suave
+        textShadowColor: 'rgba(167, 199, 231, 0.3)',
         textShadowOffset: { width: 0, height: 0 },
         textShadowRadius: 3,
     },
@@ -115,29 +114,19 @@ const styles = StyleSheet.create({
         alignItems: 'center',
         justifyContent: 'center',
         borderWidth: 2,
-        shadowOffset: { width: 0, height: 0 },
+        backgroundColor: '#ffffff', // Fondo blanco para los items
+        borderColor: '#B5EAD7', // Verde menta pastel
+        shadowColor: 'rgba(181, 234, 215, 0.5)',
+        shadowOffset: { width: 0, height: 2 },
         shadowOpacity: 0.8,
         shadowRadius: 10,
-        elevation: 10,
-    },
-    gridItemPrimary: {
-        backgroundColor: '#111',
-        borderColor: '#00b4ff',
-        shadowColor: '#00b4ff',
-    },
-    gridItemSecondary: {
-        backgroundColor: '#111',
-        borderColor: '#7fcdff',
-        shadowColor: '#7fcdff',
+        elevation: 5,
     },
     gridItemText: {
         marginTop: 15,
         fontSize: 17,
         fontWeight: '600',
-        color: '#00b4ff',
+        color: '#89CFF0', 
         textAlign: 'center',
-        textShadowColor: 'rgba(0, 180, 255, 0.3)',
-        textShadowOffset: { width: 0, height: 0 },
-        textShadowRadius: 3,
     },
 });

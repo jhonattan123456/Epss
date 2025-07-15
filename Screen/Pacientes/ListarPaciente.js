@@ -2,7 +2,7 @@ import { View, Text, FlatList, Alert, ActivityIndicator, TouchableOpacity, Style
 import React, { useState, useEffect } from "react";
 import PacienteCard from "../../components/PacienteCard";
 import { useNavigation } from "@react-navigation/native";
-import { listarPacientes as fetchPacientes, eliminarPaciente } from "../../Src/Services/PacienteService";
+import { listarPacientes, eliminarPaciente } from "../../Src/Services/PacienteService";
 
 export default function ListarPacientesScreen() {
     const [pacientes, setPacientes] = useState([]);
@@ -12,7 +12,7 @@ export default function ListarPacientesScreen() {
     const handlePacientes = async () => {
         setLoading(true);
         try {
-            const result = await fetchPacientes();
+            const result = await listarPacientes();
             if (result.success) {
                 setPacientes(result.data);
             } else {
@@ -44,6 +44,7 @@ export default function ListarPacientesScreen() {
                             const result = await eliminarPaciente(id);
                             if (result.success) {
                                 handlePacientes();
+                                Alert.alert("Éxito", "Paciente eliminado correctamente");
                             } else {
                                 Alert.alert("Error", result.message || "Error al eliminar paciente");
                             }
@@ -67,7 +68,7 @@ export default function ListarPacientesScreen() {
     if (loading) {
         return (
             <View style={styles.centered}>
-                <ActivityIndicator size="large" color="#0000ff" />
+                <ActivityIndicator size="large" color="#89CFF0" />
             </View>
         );
     }
@@ -90,8 +91,12 @@ export default function ListarPacientesScreen() {
                     )}
                 />
             )}
-            <TouchableOpacity style={styles.botonCrear} onPress={handleCrear}>
-                <Text style={styles.textoBoton}>+ Nuevo paciente</Text>
+            <TouchableOpacity 
+                style={styles.botonCrear} 
+                onPress={handleCrear}
+                activeOpacity={0.8}
+            >
+                <Text style={styles.textoBoton}>+ Nuevo Paciente</Text>
             </TouchableOpacity>
         </View>
     );
@@ -100,46 +105,40 @@ export default function ListarPacientesScreen() {
 const styles = StyleSheet.create({
     container: {
         flex: 1,
-        backgroundColor: '#000',
+        backgroundColor: '#f5f9ff',
     },
     centered: {
         flex: 1,
         justifyContent: "center",
         alignItems: "center",
-        backgroundColor: '#000',
+        backgroundColor: '#f5f9ff',
     },
     empty: {
         textAlign: "center",
         marginTop: 40,
-        color: "#7fcdff",
+        color: "#89CFF0",
         fontSize: 18,
-        textShadowColor: 'rgba(0, 180, 255, 0.3)',
-        textShadowOffset: { width: 0, height: 0 },
-        textShadowRadius: 3,
+        fontWeight: '500'
     },
     listContent: {
         padding: 15,
     },
     botonCrear: {
-        backgroundColor: 'transparent',
-        borderWidth: 2,
-        borderColor: '#00b4ff',
-        padding: 16,
+        backgroundColor: '#89CFF0',
+        borderWidth: 0,
         borderRadius: 8,
+        padding: 16,
         margin: 16,
         alignItems: "center",
-        shadowColor: '#00b4ff',
-        shadowOffset: { width: 0, height: 0 },
-        shadowOpacity: 0.8,
-        shadowRadius: 10,
-        elevation: 10,
+        shadowColor: 'rgba(137, 207, 240, 0.5)',
+        shadowOffset: { width: 0, height: 4 },
+        shadowOpacity: 0.6,
+        shadowRadius: 8,
+        elevation: 6,
     },
     textoBoton: {
-        color: "#00b4ff",
-        fontWeight: "bold",
+        color: "#fff",
+        fontWeight: "600",
         fontSize: 18,
-        textShadowColor: 'rgba(0, 180, 255, 0.5)',
-        textShadowOffset: { width: 0, height: 0 },
-        textShadowRadius: 4,
     }
 });

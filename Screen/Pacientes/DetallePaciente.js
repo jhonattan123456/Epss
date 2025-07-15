@@ -6,13 +6,13 @@ const DetallePaciente = ({ route }) => {
 
   const datosEjemplo = {
     id: '1',
-    nombre: 'Mia',
-    apellido: 'Kaulifa',
+    nombre: 'Elisabet',
+    apellido: 'Garcia',
     edad: '32 años',
     fechaNacimiento: '15/05/1990',
     genero: 'Femenino',
     telefono: '323809923',
-    correo: 'Mia@kaulifa.com',
+    correo: 'Elisabet.com',
     direccion: 'Carera 24 con 11, Ciudad',
     alergias: 'Ninguna',
     historial: '1 cirugía de senos (2015)',
@@ -72,8 +72,6 @@ const DetallePaciente = ({ route }) => {
           </View>
         )}
       </View>
-
-      {/* Sección adicional para citas recientes podría ir aquí */}
     </ScrollView>
   );
 };
@@ -97,7 +95,7 @@ function calcularEdad(fechaNacimiento) {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    backgroundColor: '#000'
+    backgroundColor: '#f5f9ff'
   },
   scrollContent: {
     padding: 20,
@@ -113,74 +111,66 @@ const styles = StyleSheet.create({
     borderRadius: 75,
     marginBottom: 20,
     borderWidth: 3,
-    borderColor: '#00b4ff',
-    shadowColor: '#00b4ff',
-    shadowOffset: { width: 0, height: 0 },
-    shadowOpacity: 0.5,
-    shadowRadius: 10,
+    borderColor: '#89CFF0',
+    backgroundColor: '#E0F7FA',
+    shadowColor: 'rgba(137, 207, 240, 0.5)',
+    shadowOffset: { width: 0, height: 4 },
+    shadowOpacity: 0.6,
+    shadowRadius: 8,
     elevation: 5
   },
   nombreCompleto: {
     fontSize: 28,
     fontWeight: 'bold',
-    color: '#00b4ff',
+    color: '#555',
     textAlign: 'center',
-    textShadowColor: '#0077ff',
-    textShadowOffset: { width: 0, height: 0 },
-    textShadowRadius: 10,
     marginBottom: 5
   },
   infoBasica: {
     fontSize: 18,
-    color: '#7fcdff',
+    color: '#89CFF0',
     textAlign: 'center',
-    textShadowColor: 'rgba(0, 180, 255, 0.3)',
-    textShadowOffset: { width: 0, height: 0 },
-    textShadowRadius: 5
+    fontWeight: '600'
   },
   seccion: {
-    backgroundColor: '#111',
-    borderRadius: 10,
+    backgroundColor: '#ffffff',
+    borderRadius: 12,
     padding: 20,
     marginBottom: 25,
-    borderWidth: 1,
-    borderColor: '#00b4ff',
-    shadowColor: '#00b4ff',
-    shadowOffset: { width: 0, height: 0 },
-    shadowOpacity: 0.3,
-    shadowRadius: 10,
+    borderLeftWidth: 6,
+    borderLeftColor: '#89CFF0',
+    shadowColor: 'rgba(181, 234, 215, 0.3)',
+    shadowOffset: { width: 0, height: 4 },
+    shadowOpacity: 0.5,
+    shadowRadius: 8,
     elevation: 5
   },
   tituloSeccion: {
     fontSize: 20,
     fontWeight: 'bold',
-    color: '#00b4ff',
+    color: '#89CFF0',
     marginBottom: 15,
     paddingBottom: 10,
     borderBottomWidth: 1,
-    borderBottomColor: '#00b4ff',
-    textShadowColor: 'rgba(0, 180, 255, 0.3)',
-    textShadowOffset: { width: 0, height: 0 },
-    textShadowRadius: 5
+    borderBottomColor: '#E0F7FA'
   },
   item: {
     marginBottom: 15
   },
   label: {
     fontSize: 16,
-    color: '#7fcdff',
-    marginBottom: 5
+    color: '#555',
+    marginBottom: 5,
+    fontWeight: '500'
   },
   valor: {
     fontSize: 16,
-    color: '#fff',
+    color: '#666',
     lineHeight: 24
   },
   link: {
-    color: '#00b4ff',
-    textShadowColor: 'rgba(0, 180, 255, 0.3)',
-    textShadowOffset: { width: 0, height: 0 },
-    textShadowRadius: 3
+    color: '#89CFF0',
+    fontWeight: '500'
   }
 });
 

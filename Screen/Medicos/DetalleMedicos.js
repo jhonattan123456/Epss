@@ -1,5 +1,5 @@
 import React from 'react';
-import { View, Text, StyleSheet, Image, ScrollView } from 'react-native'; // Importa ScrollView desde react-native
+import { View, Text, StyleSheet, Image, ScrollView } from 'react-native';
 
 const DetalleMedicos = ({ route }) => {
   const { medico } = route.params || {};
@@ -75,7 +75,7 @@ const DetalleMedicos = ({ route }) => {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    backgroundColor: '#000'
+    backgroundColor: '#f5f9ff'
   },
   scrollContainer: {
     padding: 20,
@@ -91,78 +91,73 @@ const styles = StyleSheet.create({
     borderRadius: 75,
     marginBottom: 20,
     borderWidth: 3,
-    borderColor: '#00b4ff',
-    shadowColor: '#00b4ff',
-    shadowOffset: { width: 0, height: 0 },
-    shadowOpacity: 0.5,
-    shadowRadius: 10,
+    borderColor: '#89CFF0',
+    backgroundColor: '#E0F7FA',
+    shadowColor: 'rgba(137, 207, 240, 0.5)',
+    shadowOffset: { width: 0, height: 4 },
+    shadowOpacity: 0.6,
+    shadowRadius: 8,
     elevation: 5
   },
   nombre: {
     fontSize: 26,
     fontWeight: 'bold',
-    color: '#00b4ff',
+    color: '#555',
     textAlign: 'center',
-    textShadowColor: '#0077ff',
-    textShadowOffset: { width: 0, height: 0 },
-    textShadowRadius: 8,
     marginBottom: 5
   },
   especialidad: {
     fontSize: 20,
-    color: '#7fcdff',
+    color: '#89CFF0',
     textAlign: 'center',
-    textShadowColor: 'rgba(0, 180, 255, 0.3)',
-    textShadowOffset: { width: 0, height: 0 },
-    textShadowRadius: 5
+    fontWeight: '600'
   },
   seccion: {
-    backgroundColor: '#111',
-    borderRadius: 10,
+    backgroundColor: '#ffffff',
+    borderRadius: 12,
     padding: 20,
     marginBottom: 25,
-    borderWidth: 1,
-    borderColor: '#00b4ff',
-    shadowColor: '#00b4ff',
-    shadowOffset: { width: 0, height: 0 },
-    shadowOpacity: 0.3,
-    shadowRadius: 10,
+    borderLeftWidth: 6,
+    borderLeftColor: '#89CFF0',
+    shadowColor: 'rgba(181, 234, 215, 0.3)',
+    shadowOffset: { width: 0, height: 4 },
+    shadowOpacity: 0.5,
+    shadowRadius: 8,
     elevation: 5
   },
   tituloSeccion: {
     fontSize: 20,
     fontWeight: 'bold',
-    color: '#00b4ff',
+    color: '#89CFF0',
     marginBottom: 15,
     paddingBottom: 10,
     borderBottomWidth: 1,
-    borderBottomColor: '#00b4ff',
-    textShadowColor: 'rgba(0, 180, 255, 0.3)',
-    textShadowOffset: { width: 0, height: 0 },
-    textShadowRadius: 5
+    borderBottomColor: '#E0F7FA'
   },
   item: {
     marginBottom: 15
   },
   label: {
     fontSize: 16,
-    color: '#7fcdff',
-    marginBottom: 5
+    color: '#555',
+    marginBottom: 5,
+    fontWeight: '500'
   },
   valor: {
     fontSize: 16,
-    color: '#fff'
+    color: '#666',
+    lineHeight: 24
   },
   descripcion: {
-    lineHeight: 24,
     textAlign: 'justify'
   },
   correo: {
-    color: '#00b4ff'
+    color: '#89CFF0',
+    fontWeight: '500'
   },
   horario: {
     fontSize: 16,
-    color: '#fff',
+    color: '#666',
     lineHeight: 24
   }
 });

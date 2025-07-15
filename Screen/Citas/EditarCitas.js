@@ -35,43 +35,56 @@ export default function DetalleActividad({ route }) {
         };
 
         console.log(nuevaCita);
+        Alert.alert("Éxito", modoEdicion ? "Cita actualizada correctamente" : "Cita creada correctamente");
     };
 
     return (
         <View style={styles.container}>
             <Text style={styles.titulo}>{modoEdicion ? "Editar Cita" : "Nueva Cita"}</Text>
             
+            <Text style={styles.label}>Nombre del paciente*</Text>
             <TextInput
                 style={styles.input}
-                placeholder="Nombre del paciente*"
+                placeholder="Ingrese el nombre completo"
+                placeholderTextColor="#A7C7E7"
                 value={nombre}
                 onChangeText={setNombre}
             />
 
+            <Text style={styles.label}>Fecha*</Text>
             <TextInput
                 style={styles.input}
-                placeholder="Fecha* (DD/MM/AAAA)"
+                placeholder="DD/MM/AAAA"
+                placeholderTextColor="#A7C7E7"
                 value={fecha}
                 onChangeText={setFecha}
             />
 
+            <Text style={styles.label}>Hora*</Text>
             <TextInput
                 style={styles.input}
-                placeholder="Hora* (HH:MM)"
+                placeholder="HH:MM"
+                placeholderTextColor="#A7C7E7"
                 value={hora}
                 onChangeText={setHora}
             />
 
+            <Text style={styles.label}>Descripción</Text>
             <TextInput
                 style={[styles.input, styles.textArea]}
-                placeholder="Descripción"
+                placeholder="Detalles adicionales"
+                placeholderTextColor="#A7C7E7"
                 multiline
                 numberOfLines={4}
                 value={descripcion}
                 onChangeText={setDescripcion}
             />
 
-            <TouchableOpacity style={styles.boton} onPress={handleGuardar}>
+            <TouchableOpacity 
+                style={styles.boton} 
+                onPress={handleGuardar}
+                activeOpacity={0.8}
+            >
                 <Text style={styles.textoBoton}>
                     {modoEdicion ? "Actualizar Cita" : "Crear Cita"}
                 </Text>
@@ -84,57 +97,60 @@ const styles = StyleSheet.create({
     container: {
         flex: 1,
         padding: 20,
-        backgroundColor: "#000"
+        backgroundColor: "#f5f9ff"
     },
     titulo: {
         fontSize: 28,
         fontWeight: "bold",
         marginBottom: 30,
         textAlign: "center",
-        color: "#00b4ff",
-        textShadowColor: "#0077ff",
+        color: "#89CFF0",
+        textShadowColor: "rgba(137, 207, 240, 0.5)",
         textShadowOffset: { width: 0, height: 0 },
         textShadowRadius: 10,
     },
+    label: {
+        color: "#555",
+        fontSize: 16,
+        marginBottom: 8,
+        marginLeft: 4,
+        fontWeight: "500",
+    },
     input: {
         height: 50,
-        borderColor: "#00b4ff",
+        borderColor: "#B5EAD7",
         borderWidth: 2,
         borderRadius: 8,
         paddingHorizontal: 15,
         marginBottom: 20,
-        color: "#fff",
-        backgroundColor: "#111",
-        shadowColor: "#00b4ff",
-        shadowOffset: { width: 0, height: 0 },
-        shadowOpacity: 0.8,
+        color: "#555",
+        backgroundColor: "#fff",
+        shadowColor: "rgba(181, 234, 215, 0.3)",
+        shadowOffset: { width: 0, height: 2 },
+        shadowOpacity: 0.5,
         shadowRadius: 5,
-        elevation: 5,
+        elevation: 3,
     },
     textArea: {
         height: 120,
         textAlignVertical: "top"
     },
     boton: {
-        backgroundColor: "transparent",
-        borderWidth: 2,
-        borderColor: "#00b4ff",
-        padding: 15,
+        backgroundColor: "#89CFF0",
+        borderWidth: 0,
         borderRadius: 8,
+        paddingVertical: 16,
         alignItems: "center",
-        shadowColor: "#00b4ff",
-        shadowOffset: { width: 0, height: 0 },
-        shadowOpacity: 0.8,
-        shadowRadius: 10,
-        elevation: 10,
-        marginTop: 10,
+        shadowColor: "rgba(137, 207, 240, 0.5)",
+        shadowOffset: { width: 0, height: 2 },
+        shadowOpacity: 0.6,
+        shadowRadius: 8,
+        elevation: 6,
+        marginTop: 20,
     },
     textoBoton: {
-        color: "#00b4ff",
+        color: "#fff",
         fontWeight: "bold",
         fontSize: 16,
-        textShadowColor: "rgba(0, 180, 255, 0.5)",
-        textShadowOffset: { width: 0, height: 0 },
-        textShadowRadius: 4,
     }
 });

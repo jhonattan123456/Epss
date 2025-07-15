@@ -23,45 +23,45 @@ export default function ListarMedicos({ navigation }) {
 
 const styles = StyleSheet.create({
     container: {
-        flex: 1,
-        justifyContent: "center",
-        alignItems: "center",
-        backgroundColor: "#000000",
+        flexGrow: 1,
+        padding: 20,
+        backgroundColor: '#f5f9ff'
     },
     title: {
         fontSize: 28,
-        fontWeight: "bold",
-        marginBottom: 40,
-        color: "#00b4ff",
-        textShadowColor: "#0077ff",
+        fontWeight: 'bold',
+        marginBottom: 25,
+        color: '#89CFF0',
+        textAlign: 'center',
+        textShadowColor: 'rgba(137, 207, 240, 0.5)',
         textShadowOffset: { width: 0, height: 0 },
-        textShadowRadius: 10,
+        textShadowRadius: 10
     },
     button: {
-        backgroundColor: "transparent",
-        borderWidth: 2,
-        borderColor: "#00b4ff",
-        padding: 15,
+        backgroundColor: '#89CFF0',
+        borderWidth: 0,
         borderRadius: 8,
-        marginVertical: 15,
-        width: "80%",
-        alignItems: "center",
-        shadowColor: "#00b4ff",
-        shadowOffset: { width: 0, height: 0 },
-        shadowOpacity: 0.8,
-        shadowRadius: 10,
-        elevation: 10,
+        padding: 16,
+        alignItems: 'center',
+        marginTop: 15,
+        shadowColor: 'rgba(137, 207, 240, 0.5)',
+        shadowOffset: { width: 0, height: 4 },
+        shadowOpacity: 0.6,
+        shadowRadius: 8,
+        elevation: 6
     },
     secondaryButton: {
-        borderColor: "#7fcdff",
-        shadowColor: "#7fcdff",
+        backgroundColor: '#FF9AA2',
+        shadowColor: 'rgba(255, 154, 162, 0.5)',
     },
     buttonText: {
-        color: "#00b4ff",
+        color: '#fff',
         fontSize: 18,
-        fontWeight: "600",
-        textShadowColor: "rgba(0, 180, 255, 0.5)",
-        textShadowOffset: { width: 0, height: 0 },
-        textShadowRadius: 4,
+        fontWeight: '600'
     },
+    secondaryButtonText: {
+        color: '#fff',
+        fontSize: 18,
+        fontWeight: '600'
+    }
 });

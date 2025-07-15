@@ -33,7 +33,7 @@ const DetalleEspecialidades = () => {
         renderItem={({item}) => (
           <View style={styles.especialidadContainer}>
             <View style={styles.imagenContainer}>
-              <Text style={styles.imagenTexto}>{item.nombre}</Text>
+              <Text style={styles.imagenTexto}>{item.nombre.charAt(0)}</Text>
             </View>
             
             <View style={styles.detalleContainer}>
@@ -55,79 +55,73 @@ const DetalleEspecialidades = () => {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    padding: 15,
-    backgroundColor: '#000'
+    padding: 20,
+    backgroundColor: '#f5f9ff'
   },
   titulo: {
     fontSize: 28,
     fontWeight: 'bold',
-    color: '#00b4ff',
+    color: '#89CFF0',
     marginBottom: 25,
     textAlign: 'center',
-    textShadowColor: '#0077ff',
+    textShadowColor: 'rgba(137, 207, 240, 0.5)',
     textShadowOffset: { width: 0, height: 0 },
     textShadowRadius: 10
   },
   especialidadContainer: {
-    backgroundColor: '#111',
-    borderRadius: 10,
+    backgroundColor: '#ffffff',
+    borderRadius: 12,
     marginBottom: 20,
     overflow: 'hidden',
     borderWidth: 1,
-    borderColor: '#00b4ff',
-    shadowColor: '#00b4ff',
-    shadowOffset: { width: 0, height: 0 },
+    borderColor: '#B5EAD7',
+    shadowColor: 'rgba(181, 234, 215, 0.3)',
+    shadowOffset: { width: 0, height: 4 },
     shadowOpacity: 0.5,
-    shadowRadius: 10,
-    elevation: 5
+    shadowRadius: 8,
+    elevation: 5,
+    flexDirection: 'row'
   },
   imagenContainer: {
-    height: 150,
-    backgroundColor: '#222',
+    width: 80,
+    backgroundColor: '#E0F7FA',
     justifyContent: 'center',
     alignItems: 'center',
-    borderBottomWidth: 1,
-    borderBottomColor: '#00b4ff'
+    borderRightWidth: 1,
+    borderRightColor: '#B5EAD7'
   },
   imagenTexto: {
-    fontSize: 28,
+    fontSize: 32,
     fontWeight: 'bold',
-    color: '#00b4ff',
-    textShadowColor: '#0077ff',
-    textShadowOffset: { width: 0, height: 0 },
-    textShadowRadius: 10
+    color: '#89CFF0',
   },
   detalleContainer: {
+    flex: 1,
     padding: 15
   },
   nombre: {
-    fontSize: 22,
+    fontSize: 20,
     fontWeight: 'bold',
-    color: '#00b4ff',
-    marginBottom: 8,
-    textShadowColor: 'rgba(0, 180, 255, 0.3)',
-    textShadowOffset: { width: 0, height: 0 },
-    textShadowRadius: 5
+    color: '#555',
+    marginBottom: 8
   },
   descripcion: {
     fontSize: 14,
-    color: '#7fcdff',
+    color: '#666',
     marginBottom: 12,
     lineHeight: 20
   },
   subtitulo: {
     fontSize: 16,
     fontWeight: '600',
-    color: '#00b4ff',
-    marginBottom: 5,
-    textShadowColor: 'rgba(0, 180, 255, 0.3)',
-    textShadowOffset: { width: 0, height: 0 },
-    textShadowRadius: 3
+    color: '#89CFF0',
+    marginBottom: 5
   },
   doctor: {
     fontSize: 14,
-    color: '#7fcdff',
-    marginBottom: 3
+    color: '#666',
+    marginBottom: 3,
+    marginLeft: 10
   }
 });
 

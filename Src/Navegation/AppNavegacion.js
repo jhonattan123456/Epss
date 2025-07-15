@@ -58,7 +58,7 @@ export default function AppNavegacion() {
     if (isLoading) {
     return (
       <View style={Styles.loadingContainer}>
-        <ActivityIndicator size="large" color="#1da294" />
+        <ActivityIndicator size="large" color="rgba(0, 180, 255, 0.3)" />
       </View>
     );
     }
@@ -76,6 +76,6 @@ const Styles = StyleSheet.create({
     flex: 1,
     justifyContent: "center",
     alignItems: "center",
-    backgroundColor: "#1da294",
+    backgroundColor: "rgba(0, 180, 255, 0.3)",
   },
 });

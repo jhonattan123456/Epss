@@ -6,9 +6,9 @@ const citasEjemplo = [
     id: '1',
     fecha: '10/07/2025',
     hora: '12:30',
-    medico: 'Dr.Jhon',
+    medico: 'Dr. Jhon',
     especialidad: 'Neurogia',
-    descripcion: 'Praparativos'
+    descripcion: 'Preparativos'
   },
   {
     id: '2',
@@ -51,59 +51,78 @@ const DetalleCitas = () => {
 }; 
 
 const styles = StyleSheet.create({
-    container: {
-        flex: 1,
-        padding: 20,
-        backgroundColor: "#000"
-    },
-    titulo: {
-        fontSize: 28,
-        fontWeight: "bold",
-        marginBottom: 30,
-        textAlign: "center",
-        color: "#00b4ff",
-        textShadowColor: "#0077ff",
-        textShadowOffset: { width: 0, height: 0 },
-        textShadowRadius: 10,
-    },
-    input: {
-        height: 50,
-        borderColor: "#00b4ff",
-        borderWidth: 2,
-        borderRadius: 8,
-        paddingHorizontal: 15,
-        marginBottom: 20,
-        color: "#fff",
-        backgroundColor: "#111",
-        shadowColor: "#00b4ff",
-        shadowOffset: { width: 0, height: 0 },
-        shadowOpacity: 0.8,
-        shadowRadius: 5,
-        elevation: 5,
-    },
-    textArea: {
-        height: 120,
-        textAlignVertical: "top"
-    },
-    boton: {
-        backgroundColor: "transparent",
-        borderWidth: 2,
-        borderColor: "#00b4ff",
-        padding: 15,
-        borderRadius: 8,
-        alignItems: "center",
-        shadowColor: "#00b4ff",
-        shadowOffset: { width: 0, height: 0 },
-        shadowOpacity: 0.8,
-        shadowRadius: 10,
-        elevation: 10,
-        marginTop: 10,
-    },
-    textoBoton: {
-        color: "#00b4ff",
-        fontWeight: "bold",
-        fontSize: 16,
-  }
+  container: {
+    flex: 1,
+    padding: 20,
+    backgroundColor: "#f5f9ff"
+  },
+  titulo: {
+    fontSize: 28,
+    fontWeight: "bold",
+    marginBottom: 30,
+    textAlign: "center",
+    color: "#89CFF0",
+    textShadowColor: "rgba(137, 207, 240, 0.5)",
+    textShadowOffset: { width: 0, height: 0 },
+    textShadowRadius: 10,
+  },
+  citaContainer: {
+    backgroundColor: "#ffffff",
+    borderRadius: 12,
+    padding: 16,
+    marginBottom: 16,
+    shadowColor: "rgba(181, 234, 215, 0.5)",
+    shadowOffset: { width: 0, height: 4 },
+    shadowOpacity: 0.3,
+    shadowRadius: 6,
+    elevation: 4,
+    borderLeftWidth: 6,
+    borderLeftColor: "#89CFF0",
+  },
+  fechaHoraContainer: {
+    flexDirection: 'row',
+    justifyContent: 'space-between',
+    marginBottom: 10,
+    paddingBottom: 8,
+    borderBottomWidth: 1,
+    borderBottomColor: "#E0F7FA",
+  },
+  fecha: {
+    fontSize: 16,
+    fontWeight: '600',
+    color: "#555",
+  },
+  hora: {
+    fontSize: 16,
+    fontWeight: '600',
+    color: "#89CFF0",
+  },
+  infoContainer: {
+    marginTop: 8,
+  },
+  medico: {
+    fontSize: 18,
+    fontWeight: 'bold',
+    color: "#555",
+    marginBottom: 4,
+  },
+  especialidad: {
+    fontSize: 16,
+    color: "#89CFF0",
+    marginBottom: 8,
+    fontStyle: 'italic',
+  },
+  descripcionContainer: {
+    backgroundColor: "#F0FDFF",
+    borderRadius: 8,
+    padding: 10,
+    marginTop: 8,
+  },
+  descripcion: {
+    fontSize: 14,
+    color: "#666",
+    lineHeight: 20,
+  },
 });
 
 export default DetalleCitas;

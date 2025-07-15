@@ -11,18 +11,18 @@ export default function LoginScreen({ navigation }) {
   const handleLogin = async () => {
     setLoading(true);
 
-    try{
+    try {
       const result = await loginUser(email, password);
       if (result.success) {
         Alert.alert("Éxito", "Inicio de sesión exitoso", [
-          {Text: "OK", onPress: () => console.log("Login exitoso, redirigiendo automanticanente....")},
+          { text: "OK", onPress: () => console.log("Login exitoso, redirigiendo automáticamente...") },
         ]);
-      }else {
-        Alert.alert("Error de Login", result.message || "ocurrio un error al iniciar sesión", );
+      } else {
+        Alert.alert("Error de Login", result.message || "Ocurrió un error al iniciar sesión");
       }
-    }catch (error) {
+    } catch (error) {
       console.error("Error inesperado en login:", error);
-      Alert.alert("Error", "Ocurrió un error inesperado al intentar inciar secion.");
+      Alert.alert("Error", "Ocurrió un error inesperado al intentar iniciar sesión.");
     } finally {
       setLoading(false);
     }
@@ -34,7 +34,7 @@ export default function LoginScreen({ navigation }) {
       <TextInput
         style={styles.input}
         placeholder="Correo Electrónico"
-        placeholderTextColor="#7fcdff"
+        placeholderTextColor="#A7C7E7"
         value={email}
         onChangeText={setEmail}
         keyboardType="email-address"
@@ -44,7 +44,7 @@ export default function LoginScreen({ navigation }) {
       <TextInput
         style={styles.input}
         placeholder="Contraseña"
-        placeholderTextColor="#7fcdff"
+        placeholderTextColor="#A7C7E7"
         secureTextEntry
         value={password}
         onChangeText={setPassword}
@@ -53,14 +53,17 @@ export default function LoginScreen({ navigation }) {
       <BottonComponent
         title="Iniciar Sesión"
         onPress={handleLogin}
-        disabled={!loading}
-        style={styles.neonButton}
+        disabled={loading}
+        loading={loading}
+        style={styles.primaryButton}
+        textStyle={styles.primaryButtonText}
       />
 
       <BottonComponent
         title="¿No tienes cuenta? Regístrate"
         onPress={() => navigation.navigate("Registro")}
-        style={styles.neonButtonSecondary}
+        style={styles.primaryButton} // Mismo estilo que el botón principal
+        textStyle={styles.primaryButtonText} // Mismo estilo de texto
       />
     </View>
   );
@@ -71,52 +74,46 @@ const styles = StyleSheet.create({
     flex: 1,
     justifyContent: "center",
     padding: 16,
-    backgroundColor: "#000",
+    backgroundColor: "#f5f9ff",
   },
   title: {
     fontSize: 32,
     fontWeight: "bold",
     marginBottom: 40,
     textAlign: "center",
-    color: "#00b4ff",
-    textShadowColor: "#0077ff",
+    color: "#89CFF0",
+    textShadowColor: "rgba(137, 207, 240, 0.5)",
     textShadowOffset: { width: 0, height: 0 },
     textShadowRadius: 10,
   },
   input: {
     height: 50,
-    borderColor: "#00b4ff",
+    borderColor: "#B5EAD7",
     borderWidth: 2,
     borderRadius: 8,
     paddingHorizontal: 16,
     marginBottom: 20,
-    color: "#fff",
-    backgroundColor: "#111",
-    shadowColor: "#00b4ff",
-    shadowOffset: { width: 0, height: 0 },
-    shadowOpacity: 0.8,
+    color: "#555",
+    backgroundColor: "#fff",
+    shadowColor: "rgba(181, 234, 215, 0.5)",
+    shadowOffset: { width: 0, height: 2 },
+    shadowOpacity: 0.5,
     shadowRadius: 5,
-    elevation: 5,
+    elevation: 3,
   },
-  neonButton: {
-    backgroundColor: "transparent",
-    borderWidth: 2,
-    borderColor: "#00b4ff",
-    shadowColor: "#00b4ff",
-    shadowOffset: { width: 0, height: 0 },
-    shadowOpacity: 0.8,
-    shadowRadius: 10,
-    elevation: 10,
+  primaryButton: {
+    backgroundColor: "#89CFF0", // Fondo azul pastel
+    borderWidth: 0,
+    borderRadius: 8,
+    paddingVertical: 14,
+    marginBottom: 10,
+    elevation: 3,
+    marginTop: 10, // Añadido para separación uniforme
   },
-  neonButtonSecondary: {
-    backgroundColor: "transparent",
-    borderWidth: 2,
-    borderColor: "#7fcdff",
-    shadowColor: "#7fcdff",
-    shadowOffset: { width: 0, height: 0 },
-    shadowOpacity: 0.6,
-    shadowRadius: 8,
-    elevation: 8,
-    marginTop: 15,
+  primaryButtonText: {
+    color: "#ffffff", // Texto blanco
+    fontSize: 16,
+    fontWeight: "600",
+    textAlign: "center",
   },
 });

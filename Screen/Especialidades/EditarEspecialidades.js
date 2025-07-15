@@ -38,6 +38,7 @@ const EditarEspecialidades = ({ route, navigation }) => {
     };
 
     console.log('Especialidad guardada:', especialidad);
+    Alert.alert('Éxito', modoEdicion ? 'Especialidad actualizada' : 'Especialidad creada');
     navigation.goBack();
   };
 
@@ -47,39 +48,51 @@ const EditarEspecialidades = ({ route, navigation }) => {
         {modoEdicion ? 'Editar Especialidad' : 'Nueva Especialidad'}
       </Text>
 
+      <Text style={styles.label}>Nombre de la especialidad*</Text>
       <TextInput
         style={styles.input}
-        placeholder="Nombre de la especialidad*"
+        placeholder="Ej: Cardiología"
+        placeholderTextColor="#A7C7E7"
         value={nombre}
         onChangeText={setNombre}
       />
 
+      <Text style={styles.label}>Descripción</Text>
       <TextInput
         style={[styles.input, styles.textArea]}
-        placeholder="Descripción"
+        placeholder="Detalles sobre la especialidad"
+        placeholderTextColor="#A7C7E7"
         multiline
         numberOfLines={4}
         value={descripcion}
         onChangeText={setDescripcion}
       />
 
+      <Text style={styles.label}>Doctores</Text>
       <TextInput
         style={styles.input}
-        placeholder="Doctores (separados por comas)"
+        placeholder="Separados por comas (Dr. Pérez, Dra. Gómez)"
+        placeholderTextColor="#A7C7E7"
         value={doctores}
         onChangeText={setDoctores}
       />
 
+      <Text style={styles.label}>Imagen (URL opcional)</Text>
       <TextInput
         style={styles.input}
-        placeholder="URL de imagen (opcional)"
+        placeholder="https://ejemplo.com/imagen.jpg"
+        placeholderTextColor="#A7C7E7"
         value={imagen}
         onChangeText={setImagen}
       />
 
-      <TouchableOpacity style={styles.botonGuardar} onPress={handleGuardar}>
+      <TouchableOpacity 
+        style={styles.botonGuardar} 
+        onPress={handleGuardar}
+        activeOpacity={0.8}
+      >
         <Text style={styles.textoBoton}>
-          {modoEdicion ? 'Actualizar' : 'Guardar'}
+          {modoEdicion ? 'Actualizar Especialidad' : 'Guardar Especialidad'}
         </Text>
       </TouchableOpacity>
     </View>
@@ -90,58 +103,61 @@ const styles = StyleSheet.create({
   container: {
     flex: 1,
     padding: 20,
-    backgroundColor: '#000'
+    backgroundColor: '#f5f9ff'
   },
   titulo: {
     fontSize: 28,
     fontWeight: 'bold',
-    marginBottom: 30,
-    color: '#00b4ff',
+    marginBottom: 25,
+    color: '#89CFF0',
     textAlign: 'center',
-    textShadowColor: '#0077ff',
+    textShadowColor: 'rgba(137, 207, 240, 0.5)',
     textShadowOffset: { width: 0, height: 0 },
     textShadowRadius: 10
   },
+  label: {
+    color: '#555',
+    fontSize: 16,
+    fontWeight: '500',
+    marginBottom: 8,
+    marginLeft: 4
+  },
   input: {
-    backgroundColor: '#111',
+    backgroundColor: '#fff',
     borderWidth: 2,
-    borderColor: '#00b4ff',
+    borderColor: '#B5EAD7',
     borderRadius: 8,
     padding: 15,
     marginBottom: 20,
     fontSize: 16,
-    color: '#fff',
-    shadowColor: '#00b4ff',
-    shadowOffset: { width: 0, height: 0 },
+    color: '#555',
+    shadowColor: 'rgba(181, 234, 215, 0.3)',
+    shadowOffset: { width: 0, height: 2 },
     shadowOpacity: 0.5,
     shadowRadius: 5,
-    elevation: 5
+    elevation: 3
   },
   textArea: {
     height: 120,
     textAlignVertical: 'top'
   },
   botonGuardar: {
-    backgroundColor: 'transparent',
-    borderWidth: 2,
-    borderColor: '#00b4ff',
-    padding: 15,
+    backgroundColor: '#89CFF0',
+    borderWidth: 0,
     borderRadius: 8,
+    padding: 16,
     alignItems: 'center',
-    marginTop: 15,
-    shadowColor: '#00b4ff',
-    shadowOffset: { width: 0, height: 0 },
-    shadowOpacity: 0.8,
-    shadowRadius: 10,
-    elevation: 10
+    marginTop: 20,
+    shadowColor: 'rgba(137, 207, 240, 0.5)',
+    shadowOffset: { width: 0, height: 4 },
+    shadowOpacity: 0.6,
+    shadowRadius: 8,
+    elevation: 6
   },
   textoBoton: {
-    color: '#00b4ff',
+    color: '#fff',
     fontSize: 18,
-    fontWeight: 'bold',
-    textShadowColor: 'rgba(0, 180, 255, 0.5)',
-    textShadowOffset: { width: 0, height: 0 },
-    textShadowRadius: 4
+    fontWeight: '600'
   }
 });
 
