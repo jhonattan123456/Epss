@@ -1,195 +1,207 @@
-import React, { useState, useEffect } from 'react';
-import { View, Text, TextInput, StyleSheet, TouchableOpacity, Alert, ScrollView } from 'react-native';
+import { View, Text, TextInput, StyleSheet, TouchableOpacity, Alert, ActivityIndicator, ScrollView } from "react-native";
+import React, { useState } from "react";
+import { useNavigation, useRoute } from "@react-navigation/native";
+import { crearMedicos, editarMedicos } from "../../Src/Services/MedicosService";
+import { Picker } from "@react-native-picker/picker";
 
-const EditarMedicos = ({ route, navigation }) => {
-  const [id, setId] = useState('');
-  const [nombre, setNombre] = useState('');
-  const [especialidad, setEspecialidad] = useState('');
-  const [cedula, setCedula] = useState('');
-  const [telefono, setTelefono] = useState('');
-  const [correo, setCorreo] = useState('');
-  const [horario, setHorario] = useState('');
-  const [modoEdicion, setModoEdicion] = useState(false);
+export default function EditarMedicos() {
+  const navigation = useNavigation();
+  const route = useRoute();
+  const medico = route.params?.medico || {};
 
-  const [especialidades] = useState([
-    'Cardiología',
-    'Pediatría',
-    'Dermatología',
-    'Neurología',
-    'Ortopedia'
-  ]);
+  // Estados para los campos
+  const [nombre, setNombre] = useState(medico.nombre || "");
+  const [tipoDocumento, setTipoDocumento] = useState(medico.tipo_documento || "CC"); // Corregido
+  const [numDocumento, setNumDocumento] = useState(medico.num_documento || ""); // Corregido
+  const [telefono, setTelefono] = useState(medico.telefono || "");
+  const [correo, setCorreo] = useState(medico.correo || "");
+  const [especialidadid, setEspecialidad_id] = useState (medico?.especialidad_id?.toString()|| 2 );
+  const [loading, setLoading] = useState(false);
+  const [errors, setErrors] = useState({});
 
-  useEffect(() => {
-    if (route.params?.medico) {
-      const medico = route.params.medico;
-      setId(medico.id);
-      setNombre(medico.nombre);
-      setEspecialidad(medico.especialidad);
-      setCedula(medico.cedula);
-      setTelefono(medico.telefono);
-      setCorreo(medico.correo);
-      setHorario(medico.horario);
-      setModoEdicion(true);
-    }
-  }, [route.params?.medico]);
+  const esEdicion = !!route.params?.medico;
 
-  const validarFormulario = () => {
-    if (!nombre.trim()) {
-      Alert.alert('Error', 'El nombre del médico es requerido');
+  const validarTelefono = (telefono) => {
+    const soloNumeros = telefono.replace(/[^0-10]/g, '');
+    
+    if (soloNumeros.length > 10) {
+      setErrors({...errors, telefono: "El teléfono debe tener máximo 10 dígitos"});
       return false;
     }
-    if (!especialidad.trim()) {
-      Alert.alert('Error', 'La especialidad es requerida');
-      return false;
-    }
-    if (!cedula.trim()) {
-      Alert.alert('Error', 'El número de cédula es requerido');
-      return false;
-    }
+    
+    setErrors({...errors, telefono: null});
     return true;
   };
 
-  const handleGuardar = () => {
-    if (!validarFormulario()) return;
+  const handleGuardar = async () => {
+    const nuevosErrores = {};
+    if (!nombre) nuevosErrores.nombre = "El nombre es obligatorio";
+    if (!numDocumento) nuevosErrores.numDocumento = "El documento es obligatorio";
+    if (!telefono) nuevosErrores.telefono = "El teléfono es obligatorio";
+    if (!validarTelefono(telefono)) return;
+    if (!correo) nuevosErrores.correo = "El correo es obligatorio";
+    if (!/^\S+@\S+\.\S+$/.test(correo)) nuevosErrores.correo = "Correo inválido";
 
-    const medico = {
-      id: modoEdicion ? id : Date.now().toString(),
-      nombre: nombre.trim(),
-      especialidad: especialidad.trim(),
-      cedula: cedula.trim(),
-      telefono: telefono.trim(),
-      correo: correo.trim(),
-      horario: horario.trim(),
-      imagen: `https://placehold.co/200x200?text=${nombre.trim().charAt(0)}`
-    };
+    if (Object.keys(nuevosErrores).length > 0) {
+      setErrors(nuevosErrores);
+      Alert.alert("Error", "Por favor complete todos los campos requeridos correctamente");
+      return;
+    }
 
-    console.log('Médico guardado:', medico);
-    Alert.alert('Éxito', modoEdicion ? 'Médico actualizado' : 'Médico registrado');
-    navigation.goBack();
+    setLoading(true);
+    try {
+      const datosMedicos = {
+        nombre,
+        tipo_documento: tipoDocumento, // Corregido
+        num_documento: numDocumento,   // Corregido
+        telefono: telefono.replace(/[^0-9]/g, ''),
+        correo,
+        especialisaciones_id:especialidadid
+      };
+
+      const result = esEdicion 
+        ? await editarMedicos(medico.id, datosMedicos)
+        : await crearMedicos(datosMedicos);
+
+      if (result.success) {
+        Alert.alert(
+          "Éxito",
+          esEdicion ? "Medicos actualizado" : "Medicos creado",
+          [{ text: "OK", onPress: () => navigation.goBack() }]
+        );
+      } else {
+        if (result.errors) {
+          setErrors(result.errors);
+          Alert.alert("Error", "Por favor corrija los errores en el formulario");
+        } else {
+          Alert.alert("Error", result.message || "Error al guardar");
+        }
+      }
+    } catch (error) {
+      Alert.alert("Error", "Ocurrió un error al guardar");
+    } finally {
+      setLoading(false);
+    }
   };
 
   return (
-    <ScrollView contentContainerStyle={styles.container}>
-      <Text style={styles.titulo}>
-        {modoEdicion ? 'Editar Médico' : 'Nuevo Médico'}
-      </Text>
-
-      <Text style={styles.label}>Nombre completo*</Text>
-      <TextInput
-        style={styles.input}
-        placeholder="Ej: Dr. Juan Pérez"
-        placeholderTextColor="#A7C7E7"
-        value={nombre}
-        onChangeText={setNombre}
-      />
-
-      <Text style={styles.label}>Especialidad*</Text>
-      <TextInput
-        style={styles.input}
-        placeholder="Seleccione una especialidad"
-        placeholderTextColor="#A7C7E7"
-        value={especialidad}
-        onChangeText={setEspecialidad}
-      />
-
-      <Text style={styles.label}>Número de cédula*</Text>
-      <TextInput
-        style={styles.input}
-        placeholder="Ej: 12345678"
-        placeholderTextColor="#A7C7E7"
-        value={cedula}
-        onChangeText={setCedula}
-        keyboardType="numeric"
-      />
-
-      <Text style={styles.label}>Teléfono</Text>
-      <TextInput
-        style={styles.input}
-        placeholder="Ej: 555-1234567"
-        placeholderTextColor="#A7C7E7"
-        value={telefono}
-        onChangeText={setTelefono}
-        keyboardType="phone-pad"
-      />
-
-      <Text style={styles.label}>Correo electrónico</Text>
-      <TextInput
-        style={styles.input}
-        placeholder="Ej: medico@ejemplo.com"
-        placeholderTextColor="#A7C7E7"
-        value={correo}
-        onChangeText={setCorreo}
-        keyboardType="email-address"
-        autoCapitalize="none"
-      />
-
-      <Text style={styles.label}>Horario de atención</Text>
-      <TextInput
-        style={styles.input}
-        placeholder="Ej: Lunes a Viernes 8am-5pm"
-        placeholderTextColor="#A7C7E7"
-        value={horario}
-        onChangeText={setHorario}
-      />
-
-      <TouchableOpacity 
-        style={styles.botonGuardar} 
-        onPress={handleGuardar}
-        activeOpacity={0.8}
-      >
-        <Text style={styles.textoBoton}>
-          {modoEdicion ? 'Actualizar Médico' : 'Registrar Médico'}
-        </Text>
-      </TouchableOpacity>
-
-      {modoEdicion && (
-        <TouchableOpacity 
-          style={styles.botonEliminar} 
-          onPress={() => {
-            Alert.alert(
-              'Confirmar',
-              '¿Estás seguro de eliminar este médico?',
-              [
-                { text: 'Cancelar', style: 'cancel' },
-                { text: 'Eliminar', onPress: () => {
-                  console.log('Médico eliminado ID:', id);
-                  Alert.alert('Éxito', 'Médico eliminado correctamente');
-                  navigation.goBack();
-                }}
-              ]
-            );
+    <View style={styles.container}>
+      <Text style={styles.titulo}>{esEdicion ? "Editar Medicos" : "Nuevo Medicos"}</Text>
+      
+      <ScrollView contentContainerStyle={styles.scrollContent}>
+        <Text style={styles.label}>Nombre *</Text>
+        <TextInput
+          style={[styles.input, errors.nombre && styles.inputError]}
+          placeholder="Nombre del medico"
+          placeholderTextColor="#A7C7E7"
+          value={nombre}
+          onChangeText={(text) => {
+            setNombre(text);
+            setErrors({...errors, nombre: null});
           }}
-          activeOpacity={0.8}
-        >
-          <Text style={styles.textoBotonEliminar}>Eliminar Médico</Text>
-        </TouchableOpacity>
-      )}
-    </ScrollView>
+        />
+        {errors.nombre && <Text style={styles.errorText}>{errors.nombre}</Text>}
+        
+        <Text style={styles.label}>Tipo de Documento *</Text>
+        <View style={styles.pickerContainer}>
+          <Picker
+            selectedValue={tipoDocumento}
+            onValueChange={setTipoDocumento}
+            style={styles.picker}
+          >
+            <Picker.Item label="Cédula" value="CC" />
+            <Picker.Item label="Tarjeta de Identidad" value="TI" />
+            <Picker.Item label="Pasaporte" value="PA" />
+            <Picker.Item label="Cédula Extranjería" value="CE" />
+          </Picker>
+        </View>
+        
+        <Text style={styles.label}>Número de Documento *</Text>
+        <TextInput
+          style={[styles.input, errors.numDocumento && styles.inputError]}
+          placeholder="Número de documento"
+          placeholderTextColor="#A7C7E7"
+          value={numDocumento}
+          onChangeText={(text) => {
+            setNumDocumento(text);
+            setErrors({...errors, numDocumento: null});
+          }}
+          keyboardType="numeric"
+        />
+        {errors.numDocumento && <Text style={styles.errorText}>{errors.numDocumento}</Text>}
+        
+        <Text style={styles.label}>Teléfono *</Text>
+        <TextInput
+          style={[styles.input, errors.telefono && styles.inputError]}
+          placeholder="Teléfono (10 dígitos)"
+          placeholderTextColor="#A7C7E7"
+          value={telefono}
+          onChangeText={(text) => {
+            setTelefono(text);
+            validarTelefono(text);
+          }}
+          keyboardType="phone-pad"
+          maxLength={10}
+        />
+        {errors.telefono && <Text style={styles.errorText}>{errors.telefono}</Text>}
+        
+        <Text style={styles.label}>Correo Electrónico *</Text>
+        <TextInput
+          style={[styles.input, errors.correo && styles.inputError]}
+          placeholder="ejemplo@dominio.com"
+          placeholderTextColor="#A7C7E7"
+          value={correo}
+          onChangeText={(text) => {
+            setCorreo(text);
+            setErrors({...errors, correo: null});
+          }}
+          keyboardType="email-address"
+          autoCapitalize="none"
+        />
+        {errors.correo && <Text style={styles.errorText}>{errors.correo}</Text>}
+      </ScrollView>
+
+      <TouchableOpacity
+        style={styles.boton}
+        onPress={handleGuardar}
+        disabled={loading}
+      >
+        {loading ? (
+          <ActivityIndicator color="#fff" />
+        ) : (
+          <Text style={styles.botonTexto}>
+            {esEdicion ? "Actualizar Medicos" : "Registrar Medicos"}
+          </Text>
+        )}
+      </TouchableOpacity>
+    </View>
   );
-};
+}
 
 const styles = StyleSheet.create({
   container: {
-    flexGrow: 1,
+    flex: 1,
+    backgroundColor: '#f5f9ff',
+  },
+  scrollContent: {
     padding: 20,
-    backgroundColor: '#f5f9ff'
+    paddingBottom: 100,
   },
   titulo: {
-    fontSize: 28,
+    fontSize: 24,
     fontWeight: 'bold',
-    marginBottom: 25,
     color: '#89CFF0',
     textAlign: 'center',
+    marginVertical: 20,
     textShadowColor: 'rgba(137, 207, 240, 0.5)',
     textShadowOffset: { width: 0, height: 0 },
-    textShadowRadius: 10
+    textShadowRadius: 10,
   },
   label: {
-    color: '#555',
     fontSize: 16,
-    fontWeight: '500',
+    color: '#555',
     marginBottom: 8,
-    marginLeft: 4
+    fontWeight: '500',
   },
   input: {
     backgroundColor: '#fff',
@@ -197,51 +209,51 @@ const styles = StyleSheet.create({
     borderColor: '#B5EAD7',
     borderRadius: 8,
     padding: 15,
-    marginBottom: 20,
+    marginBottom: 5,
     fontSize: 16,
     color: '#555',
-    shadowColor: 'rgba(181, 234, 215, 0.3)',
-    shadowOffset: { width: 0, height: 2 },
-    shadowOpacity: 0.5,
-    shadowRadius: 5,
-    elevation: 3
   },
-  botonGuardar: {
-    backgroundColor: '#89CFF0',
-    borderWidth: 0,
+  inputError: {
+    borderColor: '#FF9AA2',
+  },
+  pickerContainer: {
+    backgroundColor: '#fff',
+    borderWidth: 2,
+    borderColor: '#B5EAD7',
     borderRadius: 8,
+    marginBottom: 5,
+    overflow: 'hidden',
+  },
+  picker: {
+    height: 50,
+    width: '100%',
+    color: '#555',
+  },
+  errorText: {
+    color: '#FF9AA2',
+    fontSize: 14,
+    marginBottom: 15,
+    marginLeft: 5,
+  },
+  boton: {
+    backgroundColor: '#89CFF0',
     padding: 16,
+    borderRadius: 8,
+    margin: 20,
     alignItems: 'center',
-    marginTop: 15,
+    position: 'absolute',
+    bottom: 0,
+    left: 20,
+    right: 20,
     shadowColor: 'rgba(137, 207, 240, 0.5)',
     shadowOffset: { width: 0, height: 4 },
     shadowOpacity: 0.6,
     shadowRadius: 8,
-    elevation: 6
+    elevation: 6,
   },
-  botonEliminar: {
-    backgroundColor: '#FF9AA2',
-    borderWidth: 0,
-    borderRadius: 8,
-    padding: 16,
-    alignItems: 'center',
-    marginTop: 15,
-    shadowColor: 'rgba(255, 154, 162, 0.5)',
-    shadowOffset: { width: 0, height: 4 },
-    shadowOpacity: 0.6,
-    shadowRadius: 8,
-    elevation: 6
-  },
-  textoBoton: {
+  botonTexto: {
     color: '#fff',
     fontSize: 18,
-    fontWeight: '600'
+    fontWeight: '600',
   },
-  textoBotonEliminar: {
-    color: '#fff',
-    fontSize: 18,
-    fontWeight: '600'
-  }
 });
-
-export default EditarMedicos;

@@ -2,13 +2,13 @@ import React from "react";
 import { View, Text, StyleSheet, TouchableOpacity } from "react-native";
 import { Ionicons } from "@expo/vector-icons";
 
-const PacienteCard = ({ paciente, onEdit, onDelete }) => {
+const MedicosCard = ({ medico, onEdit, onDelete }) => {
     return (
         <View style={styles.card}>
             <View style={styles.infoContainer}>
-                <Text style={styles.nombre}>{paciente.nombre}</Text>
-                <Text style={styles.documento}>Documento: {paciente.documento}</Text>
-                <Text style={styles.telefono}>Teléfono: {paciente.telefono}</Text>
+                <Text style={styles.nombre}>{medico.nombre}</Text>
+                <Text style={styles.documento}>Correo: {medico.correo}</Text>
+                <Text style={styles.telefono}>Teléfono: {medico.telefono}</Text>
             </View>
             <View style={styles.buttonsContainer}>
                 <TouchableOpacity onPress={onEdit} style={[styles.button, styles.editButton]}>
@@ -76,4 +76,4 @@ const styles = StyleSheet.create({
     },
 });
 
-export default PacienteCard;
+export default MedicosCard;

@@ -58,11 +58,11 @@ export default function ListarPacientesScreen() {
     };
 
     const handleEditar = (paciente) => {
-        navigation.navigate("EditarPaciente", { paciente });
+        navigation.navigate("EditarPaciente", { paciente }); // Corregido a singular
     };
 
     const handleCrear = () => {
-        navigation.navigate("EditarPacientes");
+        navigation.navigate("EditarPaciente", { paciente: null }); // Corregido a singular
     };
 
     if (loading) {

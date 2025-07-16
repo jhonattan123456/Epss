@@ -1,21 +1,103 @@
-import React from "react";
-import { View, Text, TouchableOpacity, StyleSheet } from "react-native";
+import { View, Text, FlatList, Alert, ActivityIndicator, TouchableOpacity, StyleSheet } from "react-native";
+import React, { useState, useEffect } from "react";
+import PacienteCard from "../../components/PacienteCard";
+import { useNavigation } from "@react-navigation/native";
+import { listarMedicos, eliminarMedicos } from "../../Src/Services/MedicosService";
+import MedicosCard from "../../components/MedicosCard";
 
-export default function ListarMedicos({ navigation }) {
+export default function ListarMedicosScreen() {
+    const [medicos, setMedicos] = useState([]);
+    const [loading, setLoading] = useState(true);
+    const navigation = useNavigation();
+
+    const handleMedicos = async () => {
+        setLoading(true);
+        try {
+            const result = await listarMedicos();
+            if (result.success) {
+                setMedicos(result.data);
+            } else {
+                Alert.alert("Error", result.message || "Error al cargar medicos");
+            }
+        } catch (error) {
+            Alert.alert("Error", "Error al cargar medicos");
+        } finally {
+            setLoading(false);
+        }
+    };
+
+    useEffect(() => {
+        const unsubscribe = navigation.addListener('focus', handleMedicos);
+        return unsubscribe;
+    }, [navigation]);
+
+    const handleEliminar = (id) => {
+        Alert.alert(
+            "Confirmar Eliminación",
+            "¿Estás seguro de que deseas eliminar esta medico?",
+            [
+                { text: "Cancelar", style: "cancel" },
+                {
+                    text: "Eliminar",
+                    style: "destructive",
+                    onPress: async () => {
+                        try {
+                            const result = await eliminarMedicos(id);
+                            if (result.success) {
+                                handleMedicos();
+                                Alert.alert("Éxito", "Paciente eliminado correctamente");
+                            } else {
+                                Alert.alert("Error", result.message || "Error al eliminar medico");
+                            }
+                        } catch (error) {
+                            Alert.alert("Error", "Error al eliminar medico");
+                        }
+                    },
+                }
+            ]
+        );
+    };
+
+    const handleEditar = (medico) => {
+        navigation.navigate("EditarMedicos", { medico }); // Corregido a singular
+    };
+
+    const handleCrear = () => {
+        navigation.navigate("EditarMedicos", { medico: null }); // Corregido a singular
+    };
+
+    if (loading) {
+        return (
+            <View style={styles.centered}>
+                <ActivityIndicator size="large" color="#89CFF0" />
+            </View>
+        );
+    }
+
     return (
         <View style={styles.container}>
-            <Text style={styles.title}>Listar Médicos</Text>
-            <TouchableOpacity
-                style={styles.button}
-                onPress={() => navigation.navigate("DetalleMedicos")}
+            {medicos.length === 0 ? (
+                <Text style={styles.empty}>No hay medicos registrados</Text>
+            ) : (
+                <FlatList
+                    data={medicos}
+                    keyExtractor={(item) => item.id.toString()}
+                    contentContainerStyle={styles.listContent}
+                    renderItem={({ item }) => (
+                        <MedicosCard
+                            medico={item}
+                            onEdit={() => handleEditar(item)}
+                            onDelete={() => handleEliminar(item.id)}
+                        />
+                    )}
+                />
+            )}
+            <TouchableOpacity 
+                style={styles.botonCrear} 
+                onPress={handleCrear}
+                activeOpacity={0.8}
             >
-                <Text style={styles.buttonText}>Ver Médicos</Text>
-            </TouchableOpacity>
-            <TouchableOpacity
-                style={styles.button}
-                onPress={() => navigation.navigate("EditarMedicos")}
-            >
-                <Text style={styles.buttonText}>Editar Médicos</Text>
+                <Text style={styles.textoBoton}>+ Nuevo Paciente</Text>
             </TouchableOpacity>
         </View>
     );
@@ -23,45 +105,41 @@ export default function ListarMedicos({ navigation }) {
 
 const styles = StyleSheet.create({
     container: {
-        flexGrow: 1,
-        padding: 20,
-        backgroundColor: '#f5f9ff'
+        flex: 1,
+        backgroundColor: '#f5f9ff',
     },
-    title: {
-        fontSize: 28,
-        fontWeight: 'bold',
-        marginBottom: 25,
-        color: '#89CFF0',
-        textAlign: 'center',
-        textShadowColor: 'rgba(137, 207, 240, 0.5)',
-        textShadowOffset: { width: 0, height: 0 },
-        textShadowRadius: 10
+    centered: {
+        flex: 1,
+        justifyContent: "center",
+        alignItems: "center",
+        backgroundColor: '#f5f9ff',
     },
-    button: {
+    empty: {
+        textAlign: "center",
+        marginTop: 40,
+        color: "#89CFF0",
+        fontSize: 18,
+        fontWeight: '500'
+    },
+    listContent: {
+        padding: 15,
+    },
+    botonCrear: {
         backgroundColor: '#89CFF0',
         borderWidth: 0,
         borderRadius: 8,
         padding: 16,
-        alignItems: 'center',
-        marginTop: 15,
+        margin: 16,
+        alignItems: "center",
         shadowColor: 'rgba(137, 207, 240, 0.5)',
         shadowOffset: { width: 0, height: 4 },
         shadowOpacity: 0.6,
         shadowRadius: 8,
-        elevation: 6
+        elevation: 6,
     },
-    secondaryButton: {
-        backgroundColor: '#FF9AA2',
-        shadowColor: 'rgba(255, 154, 162, 0.5)',
-    },
-    buttonText: {
-        color: '#fff',
+    textoBoton: {
+        color: "#fff",
+        fontWeight: "600",
         fontSize: 18,
-        fontWeight: '600'
-    },
-    secondaryButtonText: {
-        color: '#fff',
-        fontSize: 18,
-        fontWeight: '600'
     }
 });

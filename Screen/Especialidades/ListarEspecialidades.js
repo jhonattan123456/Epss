@@ -1,25 +1,103 @@
-import React from "react";
-import { View, Text, TouchableOpacity, StyleSheet } from "react-native";
+import { View, Text, FlatList, Alert, ActivityIndicator, TouchableOpacity, StyleSheet } from "react-native";
+import React, { useState, useEffect } from "react";
+import { useNavigation } from "@react-navigation/native";
+import { eliminarEspecialidades, listarEspecialidades } from "../../Src/Services/EspecialidadesService";
+import EspecialidadCard from "../../components/EspecialidadesCard";
 
-export default function ListarEspecialidades({ navigation }) {
+
+export default function ListarEspecialidadScreen() {
+    const [especialidad, setEspecialidad] = useState([]);
+    const [loading, setLoading] = useState(true);
+    const navigation = useNavigation();
+
+    const handleEspecialidad = async () => {
+        setLoading(true);
+        try {
+            const result = await listarEspecialidades();
+            if (result.success) {
+                setEspecialidad(result.data);
+            } else {
+                Alert.alert("Error", result.message || "Error al cargar especialidad");
+            }
+        } catch (error) {
+            Alert.alert("Error", "Error al cargar especialidad");
+        } finally {
+            setLoading(false);
+        }
+    };
+
+    useEffect(() => {
+        const unsubscribe = navigation.addListener('focus', handleEspecialidad);
+        return unsubscribe;
+    }, [navigation]);
+
+    const handleEliminar = (id) => {
+        Alert.alert(
+            "Confirmar Eliminación",
+            "¿Estás seguro de que deseas eliminar esta paciente?",
+            [
+                { text: "Cancelar", style: "cancel" },
+                {
+                    text: "Eliminar",
+                    style: "destructive",
+                    onPress: async () => {
+                        try {
+                            const result = await eliminarEspecialidades(id);
+                            if (result.success) {
+                                handleEspecialidad();
+                                Alert.alert("Éxito", "Paciente eliminado correctamente");
+                            } else {
+                                Alert.alert("Error", result.message || "Error al eliminar paciente");
+                            }
+                        } catch (error) {
+                            Alert.alert("Error", "Error al eliminar paciente");
+                        }
+                    },
+                }
+            ]
+        );
+    };
+
+    const handleEditar = (especialidad) => {
+        navigation.navigate("EditarEspecialidades", { especialidad }); // Corregido a singular
+    };
+
+    const handleCrear = () => {
+        navigation.navigate("EditarEspecialidades"); // Corregido a singular
+    };
+
+    if (loading) {
+        return (
+            <View style={styles.centered}>
+                <ActivityIndicator size="large" color="#89CFF0" />
+            </View>
+        );
+    }
+
     return (
         <View style={styles.container}>
-            <Text style={styles.title}>Especialidades Médicas</Text>
-            
-            <TouchableOpacity
-                style={styles.primaryButton}
-                onPress={() => navigation.navigate("DetalleEspecialidades")}
+            {especialidad.length === 0 ? (
+                <Text style={styles.empty}>No hay especialidad registrados</Text>
+            ) : (
+                <FlatList
+                    data={especialidad}
+                    keyExtractor={(item) => item.id.toString()}
+                    contentContainerStyle={styles.listContent}
+                    renderItem={({ item }) => (
+                        <EspecialidadCard
+                            especialidad={item}
+                            onEdit={() => handleEditar(item)}
+                            onDelete={() => handleEliminar(item.id)}
+                        />
+                    )}
+                />
+            )}
+            <TouchableOpacity 
+                style={styles.botonCrear} 
+                onPress={handleCrear}
                 activeOpacity={0.8}
             >
-                <Text style={styles.primaryButtonText}>Ver Todas las Especialidades</Text>
-            </TouchableOpacity>
-            
-            <TouchableOpacity
-                style={styles.secondaryButton}
-                onPress={() => navigation.navigate("EditarEspecialidades")}
-                activeOpacity={0.8}
-            >
-                <Text style={styles.secondaryButtonText}>Gestionar Especialidades</Text>
+                <Text style={styles.textoBoton}>+ Nueva especialidad</Text>
             </TouchableOpacity>
         </View>
     );
@@ -28,58 +106,40 @@ export default function ListarEspecialidades({ navigation }) {
 const styles = StyleSheet.create({
     container: {
         flex: 1,
+        backgroundColor: '#f5f9ff',
+    },
+    centered: {
+        flex: 1,
         justifyContent: "center",
         alignItems: "center",
-        backgroundColor: "#f5f9ff",
-        padding: 20,
+        backgroundColor: '#f5f9ff',
     },
-    title: {
-        fontSize: 28,
-        fontWeight: "bold",
-        marginBottom: 40,
+    empty: {
+        textAlign: "center",
+        marginTop: 40,
         color: "#89CFF0",
-        textShadowColor: "rgba(137, 207, 240, 0.5)",
-        textShadowOffset: { width: 0, height: 0 },
-        textShadowRadius: 10,
+        fontSize: 18,
+        fontWeight: '500'
     },
-    primaryButton: {
-        backgroundColor: "#89CFF0",
+    listContent: {
+        padding: 15,
+    },
+    botonCrear: {
+        backgroundColor: '#89CFF0',
+        borderWidth: 0,
+        borderRadius: 8,
         padding: 16,
-        borderRadius: 10,
-        marginVertical: 12,
-        width: "100%",
-        maxWidth: 300,
+        margin: 16,
         alignItems: "center",
-        shadowColor: "rgba(137, 207, 240, 0.5)",
+        shadowColor: 'rgba(137, 207, 240, 0.5)',
         shadowOffset: { width: 0, height: 4 },
         shadowOpacity: 0.6,
         shadowRadius: 8,
         elevation: 6,
     },
-    primaryButtonText: {
+    textoBoton: {
         color: "#fff",
-        fontSize: 18,
         fontWeight: "600",
-    },
-    secondaryButton: {
-        backgroundColor: "#fff",
-        borderWidth: 2,
-        borderColor: "#89CFF0",
-        padding: 16,
-        borderRadius: 10,
-        marginVertical: 12,
-        width: "100%",
-        maxWidth: 300,
-        alignItems: "center",
-        shadowColor: "rgba(137, 207, 240, 0.3)",
-        shadowOffset: { width: 0, height: 4 },
-        shadowOpacity: 0.4,
-        shadowRadius: 6,
-        elevation: 4,
-    },
-    secondaryButtonText: {
-        color: "#89CFF0",
         fontSize: 18,
-        fontWeight: "600",
-    },
+    }
 });

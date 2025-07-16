@@ -1,126 +1,139 @@
-import React, { useState } from 'react';
-import { View, Text, TextInput, StyleSheet, TouchableOpacity, Alert } from 'react-native';
+import { View, Text, TextInput, StyleSheet, TouchableOpacity, Alert, ActivityIndicator, ScrollView } from "react-native";
+import React, { useState } from "react";
+import { useNavigation, useRoute } from "@react-navigation/native";
+import { crearEspecialidades, editarEspecialidades } from "../../Src/Services/EspecialidadesService";
+import { Picker } from "@react-native-picker/picker";
 
-const EditarEspecialidades = ({ route, navigation }) => {
-  const [modoEdicion, setModoEdicion] = useState(false);
-  const [id, setId] = useState('');
-  const [nombre, setNombre] = useState('');
-  const [descripcion, setDescripcion] = useState('');
-  const [doctores, setDoctores] = useState('');
-  const [imagen, setImagen] = useState('');
+export default function EditarEspecialidad() {
+  const navigation = useNavigation();
+  const route = useRoute();
+  const especialidad = route.params?.especialidad || {};
 
-  React.useEffect(() => {
-    if (route.params?.especialidad) {
-      setModoEdicion(true);
-      const { id, nombre, descripcion, doctores, imagen } = route.params.especialidad;
-      setId(id);
-      setNombre(nombre);
-      setDescripcion(descripcion);
-      setDoctores(doctores.join(', '));
-      setImagen(imagen);
-    }
-  }, [route.params?.especialidad]);
+  // Estados para los campos
+  const [nombre, setNombre] = useState(especialidad.nombre || "");
+  const [descripcion, setDescripcion] = useState(especialidad.descripcion || "");
+  const [loading, setLoading] = useState(false);
+  const [errors, setErrors] = useState({});
 
-  const handleGuardar = () => {
-    if (!nombre.trim()) {
-      Alert.alert('Error', 'El nombre de la especialidad es requerido');
+  const esEdicion = !!route.params?.especialidad;
+
+  const handleGuardar = async () => {
+    const nuevosErrores = {};
+    if (!nombre) nuevosErrores.nombre = "El nombre es obligatorio";
+    if (!descripcion) nuevosErrores.descripcion = "El descripcion es obligatorio";
+
+    if (Object.keys(nuevosErrores).length > 0) {
+      setErrors(nuevosErrores);
+      Alert.alert("Error", "Por favor complete todos los campos requeridos correctamente");
       return;
     }
 
-    const listaDoctores = doctores.split(',').map(d => d.trim()).filter(d => d);
+    setLoading(true);
+    try {
+      const datosEspecialidad = {
+        nombre,
+        descripcion,
 
-    const especialidad = {
-      id: modoEdicion ? id : Date.now().toString(),
-      nombre: nombre.trim(),
-      descripcion: descripcion.trim(),
-      doctores: listaDoctores,
-      imagen: imagen.trim() || `https://placehold.co/600x400?text=${nombre.trim()}`
-    };
+      };
 
-    console.log('Especialidad guardada:', especialidad);
-    Alert.alert('Éxito', modoEdicion ? 'Especialidad actualizada' : 'Especialidad creada');
-    navigation.goBack();
+      const result = esEdicion 
+        ? await editarEspecialidades(especialidad.id, datosEspecialidad)
+        : await crearEspecialidades(datosEspecialidad);
+
+      if (result.success) {
+        Alert.alert(
+          "Éxito",
+          esEdicion ? "Especialidad actualizado" : "Especialidad creado",
+          [{ text: "OK", onPress: () => navigation.goBack() }]
+        );
+      } else {
+        if (result.errors) {
+          setErrors(result.errors);
+          Alert.alert("Error", "Por favor corrija los errores en el formulario");
+        } else {
+          Alert.alert("Error", result.message || "Error al guardar");
+        }
+      }
+    } catch (error) {
+      Alert.alert("Error", "Ocurrió un error al guardar");
+    } finally {
+      setLoading(false);
+    }
   };
 
   return (
     <View style={styles.container}>
-      <Text style={styles.titulo}>
-        {modoEdicion ? 'Editar Especialidad' : 'Nueva Especialidad'}
-      </Text>
+      <Text style={styles.titulo}>{esEdicion ? "Editar Especialidad" : "Nuevo Especialidad"}</Text>
+      
+      <ScrollView contentContainerStyle={styles.scrollContent}>
+        <Text style={styles.label}>Nombre *</Text>
+        <TextInput
+          style={[styles.input, errors.nombre && styles.inputError]}
+          placeholder="Nombre del especialidad"
+          placeholderTextColor="#A7C7E7"
+          value={nombre}
+          onChangeText={(text) => {
+            setNombre(text);
+            setErrors({...errors, nombre: null});
+          }}
+        />
+        {errors.nombre && <Text style={styles.errorText}>{errors.nombre}</Text>}
+        
+        <Text style={styles.label}>Descripcion *</Text>
+        <TextInput
+          style={[styles.input, errors.descripcion && styles.inputError]}
+          placeholder="Apellido del especialidad"
+          placeholderTextColor="#A7C7E7"
+          value={descripcion}
+          onChangeText={(text) => {
+            setDescripcion(text);
+            setErrors({...errors, descripcion: null});
+          }}
+        />
+        {errors.descripcion && <Text style={styles.errorText}>{errors.descripcion}</Text>}
+      </ScrollView>
 
-      <Text style={styles.label}>Nombre de la especialidad*</Text>
-      <TextInput
-        style={styles.input}
-        placeholder="Ej: Cardiología"
-        placeholderTextColor="#A7C7E7"
-        value={nombre}
-        onChangeText={setNombre}
-      />
-
-      <Text style={styles.label}>Descripción</Text>
-      <TextInput
-        style={[styles.input, styles.textArea]}
-        placeholder="Detalles sobre la especialidad"
-        placeholderTextColor="#A7C7E7"
-        multiline
-        numberOfLines={4}
-        value={descripcion}
-        onChangeText={setDescripcion}
-      />
-
-      <Text style={styles.label}>Doctores</Text>
-      <TextInput
-        style={styles.input}
-        placeholder="Separados por comas (Dr. Pérez, Dra. Gómez)"
-        placeholderTextColor="#A7C7E7"
-        value={doctores}
-        onChangeText={setDoctores}
-      />
-
-      <Text style={styles.label}>Imagen (URL opcional)</Text>
-      <TextInput
-        style={styles.input}
-        placeholder="https://ejemplo.com/imagen.jpg"
-        placeholderTextColor="#A7C7E7"
-        value={imagen}
-        onChangeText={setImagen}
-      />
-
-      <TouchableOpacity 
-        style={styles.botonGuardar} 
+      <TouchableOpacity
+        style={styles.boton}
         onPress={handleGuardar}
-        activeOpacity={0.8}
+        disabled={loading}
       >
-        <Text style={styles.textoBoton}>
-          {modoEdicion ? 'Actualizar Especialidad' : 'Guardar Especialidad'}
-        </Text>
+        {loading ? (
+          <ActivityIndicator color="#fff" />
+        ) : (
+          <Text style={styles.botonTexto}>
+            {esEdicion ? "Actualizar Especialidad" : "Registrar Especialidad"}
+          </Text>
+        )}
       </TouchableOpacity>
     </View>
   );
-};
+}
 
 const styles = StyleSheet.create({
   container: {
     flex: 1,
+    backgroundColor: '#f5f9ff',
+  },
+  scrollContent: {
     padding: 20,
-    backgroundColor: '#f5f9ff'
+    paddingBottom: 100,
   },
   titulo: {
-    fontSize: 28,
+    fontSize: 24,
     fontWeight: 'bold',
-    marginBottom: 25,
     color: '#89CFF0',
     textAlign: 'center',
+    marginVertical: 20,
     textShadowColor: 'rgba(137, 207, 240, 0.5)',
     textShadowOffset: { width: 0, height: 0 },
-    textShadowRadius: 10
+    textShadowRadius: 10,
   },
   label: {
-    color: '#555',
     fontSize: 16,
-    fontWeight: '500',
+    color: '#555',
     marginBottom: 8,
-    marginLeft: 4
+    fontWeight: '500',
   },
   input: {
     backgroundColor: '#fff',
@@ -128,37 +141,51 @@ const styles = StyleSheet.create({
     borderColor: '#B5EAD7',
     borderRadius: 8,
     padding: 15,
-    marginBottom: 20,
+    marginBottom: 5,
     fontSize: 16,
     color: '#555',
-    shadowColor: 'rgba(181, 234, 215, 0.3)',
-    shadowOffset: { width: 0, height: 2 },
-    shadowOpacity: 0.5,
-    shadowRadius: 5,
-    elevation: 3
   },
-  textArea: {
-    height: 120,
-    textAlignVertical: 'top'
+  inputError: {
+    borderColor: '#FF9AA2',
   },
-  botonGuardar: {
-    backgroundColor: '#89CFF0',
-    borderWidth: 0,
+  pickerContainer: {
+    backgroundColor: '#fff',
+    borderWidth: 2,
+    borderColor: '#B5EAD7',
     borderRadius: 8,
+    marginBottom: 5,
+    overflow: 'hidden',
+  },
+  picker: {
+    height: 50,
+    width: '100%',
+    color: '#555',
+  },
+  errorText: {
+    color: '#FF9AA2',
+    fontSize: 14,
+    marginBottom: 15,
+    marginLeft: 5,
+  },
+  boton: {
+    backgroundColor: '#89CFF0',
     padding: 16,
+    borderRadius: 8,
+    margin: 20,
     alignItems: 'center',
-    marginTop: 20,
+    position: 'absolute',
+    bottom: 0,
+    left: 20,
+    right: 20,
     shadowColor: 'rgba(137, 207, 240, 0.5)',
     shadowOffset: { width: 0, height: 4 },
     shadowOpacity: 0.6,
     shadowRadius: 8,
-    elevation: 6
+    elevation: 6,
   },
-  textoBoton: {
+  botonTexto: {
     color: '#fff',
     fontSize: 18,
-    fontWeight: '600'
-  }
+    fontWeight: '600',
+  },
 });
-
-export default EditarEspecialidades;

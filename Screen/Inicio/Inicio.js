@@ -1,4 +1,3 @@
-// src/Screen/Inicio/Inicio.js
 import React from 'react';
 import { View, Text, StyleSheet, TouchableOpacity, SafeAreaView, StatusBar, Dimensions } from 'react-native';
 import { AntDesign, FontAwesome6, Fontisto, MaterialIcons } from '@expo/vector-icons';

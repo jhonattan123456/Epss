@@ -1,139 +1,288 @@
-import {View, Text, TextInput, StyleSheet, TouchableOpacity, Alert, ActivityIndicator} from "react-native";
-import React, {useState} from "react";
-import {useNavigation, useRoute} from "@react-navigation/native";
-import {crearPaciente, editarPaciente} from "../../Src/Services/PacienteService";
+import { View, Text, TextInput, StyleSheet, TouchableOpacity, Alert, ActivityIndicator, ScrollView } from "react-native";
+import React, { useState } from "react";
+import { useNavigation, useRoute } from "@react-navigation/native";
+import { crearPaciente, editarPaciente } from "../../Src/Services/PacienteService";
+import { Picker } from "@react-native-picker/picker";
 
-export default function EditarPaciente () {
+export default function EditarPaciente() {
   const navigation = useNavigation();
   const route = useRoute();
+  const paciente = route.params?.paciente || {};
 
-  const paciente = route.params?.paciente;
-
+  // Estados para los campos
   const [nombre, setNombre] = useState(paciente.nombre || "");
-  const [edad, setEdad] = useState(paciente.edad || "");
+  const [apellido, setApellido] = useState(paciente.apellido || "");
+  const [genero, setGenero] = useState(paciente.genero || "M");
+  const [tipoDocumento, setTipoDocumento] = useState(paciente.tipo_docuemento || "CC"); // Corregido
+  const [numDocumento, setNumDocumento] = useState(paciente.num_docuemento || ""); // Corregido
   const [telefono, setTelefono] = useState(paciente.telefono || "");
-  const [direccion, setDireccion] = useState(paciente.direccion || "");
+  const [correo, setCorreo] = useState(paciente.correo || "");
   const [loading, setLoading] = useState(false);
+  const [errors, setErrors] = useState({});
 
-  const esEdicion = !!paciente;
+  const esEdicion = !!route.params?.paciente;
+
+  const validarTelefono = (telefono) => {
+    const soloNumeros = telefono.replace(/[^0-10]/g, '');
+    
+    if (soloNumeros.length > 10) {
+      setErrors({...errors, telefono: "El teléfono debe tener máximo 10 dígitos"});
+      return false;
+    }
+    
+    setErrors({...errors, telefono: null});
+    return true;
+  };
 
   const handleGuardar = async () => {
-        if (!nombre || !edad || !telefono || !direccion) {
-            Alert.alert("Error", "Todos los campos son obligatorios");
-            return;
-        }
-        setLoading(true);
-        try{
-            let  result; 
-            if (esEdicion) {
-                result = await editarPaciente(paciente.id, { nombre, edad, telefono, direccion });
-            } else {
-                result = await crearPaciente({ nombre, edad, telefono, direccion });
-            } 
-            if (result.success) {
-                Alert.alert("Éxito", esEdicion ? "Paciente actualizado" : "Paciente creado");
-                navigation.goBack();
-            } else {
-                Alert.alert("Error", result.message || "Error al guardar al paciente");
-            }        
-        } catch (error) {
-            Alert.alert("Error", "Error al guardar al paciente");
-        } finally {
-            setLoading(false);
-        }
+    const nuevosErrores = {};
+    if (!nombre) nuevosErrores.nombre = "El nombre es obligatorio";
+    if (!apellido) nuevosErrores.apellido = "El apellido es obligatorio";
+    if (!numDocumento) nuevosErrores.numDocumento = "El documento es obligatorio";
+    if (!telefono) nuevosErrores.telefono = "El teléfono es obligatorio";
+    if (!validarTelefono(telefono)) return;
+    if (!correo) nuevosErrores.correo = "El correo es obligatorio";
+    if (!/^\S+@\S+\.\S+$/.test(correo)) nuevosErrores.correo = "Correo inválido";
+
+    if (Object.keys(nuevosErrores).length > 0) {
+      setErrors(nuevosErrores);
+      Alert.alert("Error", "Por favor complete todos los campos requeridos correctamente");
+      return;
     }
-    return (
-      <View style={Styles.container}>
-            <Text style={Styles.titulo}>{esEdicion ? "Editar Paciente" : "Crear Paciente"}</Text>
-            <TextInput
-                style={Styles.input}
-                placeholder="Nombre del paciente"
-                value={nombre}
-                onChangeText={setNombre}
-            />
-            <TextInput
-                style={Styles.input}
-                placeholder="Edad del paciente"
-                value={edad}
-                onChangeText={setEdad}
-            />
-            <TextInput
-                style={Styles.input}
-                placeholder="Telefono"
-                value={telefono}
-                keyboardType="numeric"
-                onChangeText={setTelefono}
-            />
-            <TextInput
-                style={Styles.input}
-                placeholder="Dirección"
-                value={direccion}
-                keyboardType="numeric"
-                onChangeText={setDireccion}
-            />
-            <TouchableOpacity
-            style={Styles.boton} onPress={handleGuardar} disabled={loading}>
-                {loading ? (
-                    <ActivityIndicator color="#fff" />
-                ) : (
-                    <Text style={Styles.botonTexto}>{esEdicion ? "Actualizar" : "Crear"}</Text>
-                )}
-            </TouchableOpacity>
+
+    setLoading(true);
+    try {
+      const datosPaciente = {
+        nombre,
+        apellido,
+        genero,
+        tipo_docuemento: tipoDocumento, // Corregido
+        num_docuemento: numDocumento,   // Corregido
+        telefono: telefono.replace(/[^0-9]/g, ''),
+        correo
+      };
+
+      const result = esEdicion 
+        ? await editarPaciente(paciente.id, datosPaciente)
+        : await crearPaciente(datosPaciente);
+
+      if (result.success) {
+        Alert.alert(
+          "Éxito",
+          esEdicion ? "Paciente actualizado" : "Paciente creado",
+          [{ text: "OK", onPress: () => navigation.goBack() }]
+        );
+      } else {
+        if (result.errors) {
+          setErrors(result.errors);
+          Alert.alert("Error", "Por favor corrija los errores en el formulario");
+        } else {
+          Alert.alert("Error", result.message || "Error al guardar");
+        }
+      }
+    } catch (error) {
+      Alert.alert("Error", "Ocurrió un error al guardar");
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  return (
+    <View style={styles.container}>
+      <Text style={styles.titulo}>{esEdicion ? "Editar Paciente" : "Nuevo Paciente"}</Text>
+      
+      <ScrollView contentContainerStyle={styles.scrollContent}>
+        <Text style={styles.label}>Nombre *</Text>
+        <TextInput
+          style={[styles.input, errors.nombre && styles.inputError]}
+          placeholder="Nombre del paciente"
+          placeholderTextColor="#A7C7E7"
+          value={nombre}
+          onChangeText={(text) => {
+            setNombre(text);
+            setErrors({...errors, nombre: null});
+          }}
+        />
+        {errors.nombre && <Text style={styles.errorText}>{errors.nombre}</Text>}
+        
+        <Text style={styles.label}>Apellido *</Text>
+        <TextInput
+          style={[styles.input, errors.apellido && styles.inputError]}
+          placeholder="Apellido del paciente"
+          placeholderTextColor="#A7C7E7"
+          value={apellido}
+          onChangeText={(text) => {
+            setApellido(text);
+            setErrors({...errors, apellido: null});
+          }}
+        />
+        {errors.apellido && <Text style={styles.errorText}>{errors.apellido}</Text>}
+        
+        <Text style={styles.label}>Género *</Text>
+        <View style={styles.pickerContainer}>
+          <Picker
+            selectedValue={genero}
+            onValueChange={setGenero}
+            style={styles.picker}
+          >
+            <Picker.Item label="Masculino" value="M" />
+            <Picker.Item label="Femenino" value="F" />
+            <Picker.Item label="Otro" value="O" />
+          </Picker>
         </View>
-    )
+        
+        <Text style={styles.label}>Tipo de Documento *</Text>
+        <View style={styles.pickerContainer}>
+          <Picker
+            selectedValue={tipoDocumento}
+            onValueChange={setTipoDocumento}
+            style={styles.picker}
+          >
+            <Picker.Item label="Cédula" value="CC" />
+            <Picker.Item label="Tarjeta de Identidad" value="TI" />
+            <Picker.Item label="Pasaporte" value="PA" />
+            <Picker.Item label="Cédula Extranjería" value="CE" />
+          </Picker>
+        </View>
+        
+        <Text style={styles.label}>Número de Documento *</Text>
+        <TextInput
+          style={[styles.input, errors.numDocumento && styles.inputError]}
+          placeholder="Número de documento"
+          placeholderTextColor="#A7C7E7"
+          value={numDocumento}
+          onChangeText={(text) => {
+            setNumDocumento(text);
+            setErrors({...errors, numDocumento: null});
+          }}
+          keyboardType="numeric"
+        />
+        {errors.numDocumento && <Text style={styles.errorText}>{errors.numDocumento}</Text>}
+        
+        <Text style={styles.label}>Teléfono *</Text>
+        <TextInput
+          style={[styles.input, errors.telefono && styles.inputError]}
+          placeholder="Teléfono (10 dígitos)"
+          placeholderTextColor="#A7C7E7"
+          value={telefono}
+          onChangeText={(text) => {
+            setTelefono(text);
+            validarTelefono(text);
+          }}
+          keyboardType="phone-pad"
+          maxLength={10}
+        />
+        {errors.telefono && <Text style={styles.errorText}>{errors.telefono}</Text>}
+        
+        <Text style={styles.label}>Correo Electrónico *</Text>
+        <TextInput
+          style={[styles.input, errors.correo && styles.inputError]}
+          placeholder="ejemplo@dominio.com"
+          placeholderTextColor="#A7C7E7"
+          value={correo}
+          onChangeText={(text) => {
+            setCorreo(text);
+            setErrors({...errors, correo: null});
+          }}
+          keyboardType="email-address"
+          autoCapitalize="none"
+        />
+        {errors.correo && <Text style={styles.errorText}>{errors.correo}</Text>}
+      </ScrollView>
+
+      <TouchableOpacity
+        style={styles.boton}
+        onPress={handleGuardar}
+        disabled={loading}
+      >
+        {loading ? (
+          <ActivityIndicator color="#fff" />
+        ) : (
+          <Text style={styles.botonTexto}>
+            {esEdicion ? "Actualizar Paciente" : "Registrar Paciente"}
+          </Text>
+        )}
+      </TouchableOpacity>
+    </View>
+  );
 }
 
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    padding: 25,
-    backgroundColor: "#000",
+    backgroundColor: '#f5f9ff',
+  },
+  scrollContent: {
+    padding: 20,
+    paddingBottom: 100,
   },
   titulo: {
-    fontSize: 28,
-    fontWeight: "bold",
-    marginBottom: 30,
-    color: "#00b4ff",
-    textAlign: "center",
-    textShadowColor: "#0077ff",
+    fontSize: 24,
+    fontWeight: 'bold',
+    color: '#89CFF0',
+    textAlign: 'center',
+    marginVertical: 20,
+    textShadowColor: 'rgba(137, 207, 240, 0.5)',
     textShadowOffset: { width: 0, height: 0 },
     textShadowRadius: 10,
   },
+  label: {
+    fontSize: 16,
+    color: '#555',
+    marginBottom: 8,
+    fontWeight: '500',
+  },
   input: {
-    height: 50,
-    borderColor: "#00b4ff",
+    backgroundColor: '#fff',
     borderWidth: 2,
+    borderColor: '#B5EAD7',
     borderRadius: 8,
-    paddingHorizontal: 15,
-    marginBottom: 20,
-    color: "#fff",
-    backgroundColor: "#111",
-    shadowColor: "#00b4ff",
-    shadowOffset: { width: 0, height: 0 },
-    shadowOpacity: 0.5,
-    shadowRadius: 5,
-    elevation: 5,
+    padding: 15,
+    marginBottom: 5,
+    fontSize: 16,
+    color: '#555',
+  },
+  inputError: {
+    borderColor: '#FF9AA2',
+  },
+  pickerContainer: {
+    backgroundColor: '#fff',
+    borderWidth: 2,
+    borderColor: '#B5EAD7',
+    borderRadius: 8,
+    marginBottom: 5,
+    overflow: 'hidden',
+  },
+  picker: {
+    height: 50,
+    width: '100%',
+    color: '#555',
+  },
+  errorText: {
+    color: '#FF9AA2',
+    fontSize: 14,
+    marginBottom: 15,
+    marginLeft: 5,
   },
   boton: {
-    backgroundColor: "transparent",
-    borderWidth: 2,
-    borderColor: "#00b4ff",
-    padding: 15,
+    backgroundColor: '#89CFF0',
+    padding: 16,
     borderRadius: 8,
-    marginTop: 10,
-    shadowColor: "#00b4ff",
-    shadowOffset: { width: 0, height: 0 },
-    shadowOpacity: 0.8,
-    shadowRadius: 10,
-    elevation: 10,
+    margin: 20,
+    alignItems: 'center',
+    position: 'absolute',
+    bottom: 0,
+    left: 20,
+    right: 20,
+    shadowColor: 'rgba(137, 207, 240, 0.5)',
+    shadowOffset: { width: 0, height: 4 },
+    shadowOpacity: 0.6,
+    shadowRadius: 8,
+    elevation: 6,
   },
   botonTexto: {
-    color: "#00b4ff",
-    textAlign: "center",
+    color: '#fff',
     fontSize: 18,
-    fontWeight: "bold",
-    textShadowColor: "rgba(0, 180, 255, 0.5)",
-    textShadowOffset: { width: 0, height: 0 },
-    textShadowRadius: 4,
-    },
+    fontWeight: '600',
+  },
 });

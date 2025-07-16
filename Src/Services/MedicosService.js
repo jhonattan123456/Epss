@@ -1,12 +1,12 @@
 import api from "./conexion";
 
-export const listarPacientes = async () => {
+export const listarMedicos = async () => {
     try {
-        const response = await api.get("/listarPasientes");
+        const response = await api.get("/listarMedicos");
         return { success: true, data: response.data };
     } catch (error) {
         console.error(
-            "Error al listar pacientes:",
+            "Error al listar Medicos:",
             error.response ? error.response.data : error.message
         );
         return {
@@ -18,9 +18,9 @@ export const listarPacientes = async () => {
     }
 };
 
-export const eliminarPaciente = async (id) => {
+export const eliminarMedicos = async (id) => {
     try {
-        await api.delete(`/eliminarPasientes/${id}`);
+        await api.delete(`/eliminarMedicos/${id}`);
         return { success: true };
     } catch (error) {
         console.error(
@@ -36,9 +36,9 @@ export const eliminarPaciente = async (id) => {
     }
 };
 
-export const crearPaciente = async (paciente) => {
+export const crearMedicos = async (paciente) => {
     try {
-        const response = await api.post("/crearPasientes", paciente);
+        const response = await api.post("/crearMedicos", paciente);
         return { success: true, data: response.data };
     } catch (error) {
         console.error(
@@ -54,9 +54,9 @@ export const crearPaciente = async (paciente) => {
     }
 };
 
-export const editarPaciente = async (id, data) => {
+export const editarMedicos = async (id, data) => {
     try {
-        const response = await api.put(`/editarPasientes/${id}`, data);
+        const response = await api.put(`/editarMedicos/${id}`, data);
         return { success: true, data: response.data };
     } catch (error) {
         console.error(
