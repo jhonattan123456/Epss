@@ -97,7 +97,7 @@ export default function ListarMedicosScreen() {
                 onPress={handleCrear}
                 activeOpacity={0.8}
             >
-                <Text style={styles.textoBoton}>+ Nuevo Paciente</Text>
+                <Text style={styles.textoBoton}>+ Nuevo Medico</Text>
             </TouchableOpacity>
         </View>
     );
