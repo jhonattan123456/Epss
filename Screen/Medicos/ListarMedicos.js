@@ -6,31 +6,35 @@ import { listarMedicos, eliminarMedicos } from "../../Src/Services/MedicosServic
 import MedicosCard from "../../components/MedicosCard";
 
 export default function ListarMedicosScreen() {
+    // Estados para almacenar la lista de médicos y el estado de carga
     const [medicos, setMedicos] = useState([]);
     const [loading, setLoading] = useState(true);
     const navigation = useNavigation();
 
+    // Función para cargar la lista de médicos
     const handleMedicos = async () => {
         setLoading(true);
         try {
             const result = await listarMedicos();
             if (result.success) {
-                setMedicos(result.data);
+                setMedicos(result.data); // Actualiza el estado con los médicos obtenidos
             } else {
                 Alert.alert("Error", result.message || "Error al cargar medicos");
             }
         } catch (error) {
             Alert.alert("Error", "Error al cargar medicos");
         } finally {
-            setLoading(false);
+            setLoading(false); // Finaliza el estado de carga
         }
     };
 
+    // Efecto para cargar los médicos cuando la pantalla obtiene foco
     useEffect(() => {
         const unsubscribe = navigation.addListener('focus', handleMedicos);
-        return unsubscribe;
+        return unsubscribe; // Limpieza del listener al desmontar
     }, [navigation]);
 
+    // Función para eliminar un médico con confirmación
     const handleEliminar = (id) => {
         Alert.alert(
             "Confirmar Eliminación",
@@ -44,7 +48,7 @@ export default function ListarMedicosScreen() {
                         try {
                             const result = await eliminarMedicos(id);
                             if (result.success) {
-                                handleMedicos();
+                                handleMedicos(); // Recarga la lista después de eliminar
                                 Alert.alert("Éxito", "Paciente eliminado correctamente");
                             } else {
                                 Alert.alert("Error", result.message || "Error al eliminar medico");
@@ -58,14 +62,17 @@ export default function ListarMedicosScreen() {
         );
     };
 
+    // Función para navegar a la pantalla de edición con los datos del médico
     const handleEditar = (medico) => {
-        navigation.navigate("EditarMedicos", { medico }); // Corregido a singular
+        navigation.navigate("EditarMedicos", { medico }); // Pasa el médico como parámetro
     };
 
+    // Función para navegar a la pantalla de creación de nuevo médico
     const handleCrear = () => {
-        navigation.navigate("EditarMedicos", { medico: null }); // Corregido a singular
+        navigation.navigate("EditarMedicos", { medico: null }); // Pasa null para indicar creación
     };
 
+    // Muestra un indicador de carga mientras se obtienen los datos
     if (loading) {
         return (
             <View style={styles.centered}>
@@ -74,8 +81,10 @@ export default function ListarMedicosScreen() {
         );
     }
 
+    // Renderizado principal de la pantalla
     return (
         <View style={styles.container}>
+            {/* Muestra mensaje si no hay médicos o la lista */}
             {medicos.length === 0 ? (
                 <Text style={styles.empty}>No hay medicos registrados</Text>
             ) : (
@@ -86,12 +95,13 @@ export default function ListarMedicosScreen() {
                     renderItem={({ item }) => (
                         <MedicosCard
                             medico={item}
-                            onEdit={() => handleEditar(item)}
-                            onDelete={() => handleEliminar(item.id)}
+                            onEdit={() => handleEditar(item)} // Pasa función de edición
+                            onDelete={() => handleEliminar(item.id)} // Pasa función de eliminación
                         />
                     )}
                 />
             )}
+            {/* Botón para crear nuevo médico */}
             <TouchableOpacity 
                 style={styles.botonCrear} 
                 onPress={handleCrear}
@@ -103,10 +113,11 @@ export default function ListarMedicosScreen() {
     );
 }
 
+// Estilos de la pantalla
 const styles = StyleSheet.create({
     container: {
         flex: 1,
-        backgroundColor: '#f5f9ff',
+        backgroundColor: '#f5f9ff', // Fondo claro azulado
     },
     centered: {
         flex: 1,
@@ -117,28 +128,28 @@ const styles = StyleSheet.create({
     empty: {
         textAlign: "center",
         marginTop: 40,
-        color: "#89CFF0",
+        color: "#89CFF0", // Color azul claro
         fontSize: 18,
         fontWeight: '500'
     },
     listContent: {
-        padding: 15,
+        padding: 15, // Espaciado para la lista
     },
     botonCrear: {
-        backgroundColor: '#89CFF0',
+        backgroundColor: '#89CFF0', // Color azul claro
         borderWidth: 0,
         borderRadius: 8,
         padding: 16,
         margin: 16,
         alignItems: "center",
-        shadowColor: 'rgba(137, 207, 240, 0.5)',
+        shadowColor: 'rgba(137, 207, 240, 0.5)', // Sombra con opacidad
         shadowOffset: { width: 0, height: 4 },
         shadowOpacity: 0.6,
         shadowRadius: 8,
-        elevation: 6,
+        elevation: 6, // Sombra en Android
     },
     textoBoton: {
-        color: "#fff",
+        color: "#fff", // Texto blanco
         fontWeight: "600",
         fontSize: 18,
     }

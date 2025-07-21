@@ -1,25 +1,6 @@
 import React from 'react';
 import { View, Text, StyleSheet, FlatList } from 'react-native';
 
-const citasEjemplo = [
-  {
-    id: '1',
-    fecha: '10/07/2025',
-    hora: '12:30',
-    medico: 'Dr. Jhon',
-    especialidad: 'Neurogia',
-    descripcion: 'Preparativos'
-  },
-  {
-    id: '2',
-    fecha: '24/06/2025',
-    hora: '15:35',
-    medico: 'Dra. Galindo',
-    especialidad: 'Neurología',
-    descripcion: 'Revisión de tratamiento'
-  }
-];
-
 const DetalleCitas = () => {
   return (
     <View style={styles.container}>

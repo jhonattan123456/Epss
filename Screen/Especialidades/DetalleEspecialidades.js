@@ -1,26 +1,6 @@
 import React from 'react';
 import { View, Text, StyleSheet, FlatList } from 'react-native';
 
-const especialidadesEjemplo = [
-  {
-    id: '1',
-    nombre: 'Cardiología',
-    descripcion: 'Especialidad médica que estudia el corazón y el sistema cardiovascular',
-    doctores: ['Dr. García', 'Dr. Martínez'],
-  },
-  {
-    id: '2',
-    nombre: 'Dermatología',
-    descripcion: 'Especialidad médica enfocada en el cuidado de la piel y sus enfermedades',
-    doctores: ['Dra. López', 'Dra. Rodríguez'],
-  },
-  {
-    id: '3',
-    nombre: 'Pediatría',
-    descripcion: 'Especialidad médica dedicada a la salud de niños y adolescentes',
-    doctores: ['Dr. Pérez', 'Dra. Gómez'],
-  }
-];
 
 const DetalleEspecialidades = () => {
   return (

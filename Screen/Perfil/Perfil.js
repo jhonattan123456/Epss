@@ -1,11 +1,5 @@
 import React, { useEffect, useState } from "react";
-import {
-  View,
-  Text,
-  StyleSheet,
-  ActivityIndicator,
-  Alert,
-} from "react-native";
+import { View, Text, StyleSheet, ActivityIndicator, Alert } from "react-native";
 import AsyncStorage from "@react-native-async-storage/async-storage";
 import BottonComponent from "../../components/BottonComponent";
 import api from "../../Src/Services/conexion";
@@ -41,7 +35,9 @@ export default function PantallaPerfil({ navigation }) {
           console.log("Error del servidor:", error.response.status);
           Alert.alert(
             "Error del servidor",
-            `Error ${error.response.status}: ${error.response.data?.message || "No se pudo cargar el perfil"}`,
+            `Error ${error.response.status}: ${
+              error.response.data?.message || "No se pudo cargar el perfil"
+            }`,
             [
               {
                 text: "OK",
@@ -99,11 +95,24 @@ export default function PantallaPerfil({ navigation }) {
       <View style={styles.container}>
         <Text style={styles.title}>Perfil de Usuario</Text>
         <View style={styles.ContainerPerfil}>
-          <Text style={styles.errorText}>No se pudo cargar la información del perfil</Text>
+          <Text style={styles.errorText}>
+            No se pudo cargar la información del perfil
+          </Text>
         </View>
       </View>
     );
   }
+
+
+
+  
+  //funcion de redireccion para editar perfil
+  const editarPerfil = (usuario) => {
+    navigation.navigate("EditarPerfil", { usuario });
+  };
+
+
+
 
   return (
     <View style={styles.container}>
@@ -118,16 +127,16 @@ export default function PantallaPerfil({ navigation }) {
         </Text>
       </View>
 
-      <BottonComponent 
-        title="Editar Perfil" 
-        onPress={() => {}} 
+      <BottonComponent
+        title="Editar Perfil"
+        onPress={editarPerfil}
         style={styles.primaryButton}
         textStyle={styles.primaryButtonText}
       />
       <BottonComponent
         title="Cerrar Sesión"
         onPress={async () => {
-            await logoutUser();
+          await logoutUser();
         }}
         style={styles.secondaryButton}
         textStyle={styles.secondaryButtonText}
@@ -171,13 +180,13 @@ const styles = StyleSheet.create({
     fontSize: 18,
     color: "#555",
     marginBottom: 15,
-    lineHeight: 24
+    lineHeight: 24,
   },
   errorText: {
     fontSize: 18,
     color: "#FF9AA2",
     textAlign: "center",
-    fontWeight: "500"
+    fontWeight: "500",
   },
   primaryButton: {
     backgroundColor: "#89CFF0",
@@ -194,7 +203,7 @@ const styles = StyleSheet.create({
   primaryButtonText: {
     color: "#fff",
     fontSize: 18,
-    fontWeight: "600"
+    fontWeight: "600",
   },
   secondaryButton: {
     backgroundColor: "#FF9AA2",
@@ -210,6 +219,6 @@ const styles = StyleSheet.create({
   secondaryButtonText: {
     color: "#fff",
     fontSize: 18,
-    fontWeight: "600"
-  }
+    fontWeight: "600",
+  },
 });

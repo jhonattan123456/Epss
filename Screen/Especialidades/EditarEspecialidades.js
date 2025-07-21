@@ -61,6 +61,7 @@ export default function EditarEspecialidad() {
     }
   };
 
+  
   return (
     <View style={styles.container}>
       <Text style={styles.titulo}>{esEdicion ? "Editar Especialidad" : "Nuevo Especialidad"}</Text>
@@ -82,7 +83,7 @@ export default function EditarEspecialidad() {
         <Text style={styles.label}>Descripcion *</Text>
         <TextInput
           style={[styles.input, errors.descripcion && styles.inputError]}
-          placeholder="Apellido del especialidad"
+          placeholder="Descripcion del especialidad"
           placeholderTextColor="#A7C7E7"
           value={descripcion}
           onChangeText={(text) => {

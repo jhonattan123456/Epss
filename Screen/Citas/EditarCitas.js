@@ -1,8 +1,17 @@
-import { View, Text, TextInput, StyleSheet, TouchableOpacity, Alert, ActivityIndicator, ScrollView } from "react-native";
+import {
+  View,
+  Text,
+  TextInput,
+  StyleSheet,
+  TouchableOpacity,
+  Alert,
+  ActivityIndicator,
+  ScrollView,
+  Switch,
+} from "react-native";
 import React, { useState } from "react";
 import { useNavigation, useRoute } from "@react-navigation/native";
 import { crearCitas, editarCitas } from "../../Src/Services/CitasService";
-// import { Picker } from "@react-native-picker/picker";
 
 export default function EditarCitas() {
   const navigation = useNavigation();
@@ -16,10 +25,16 @@ export default function EditarCitas() {
   const [horaFin, setHoraFin] = useState(cita.hora_fin || "");
   const [dias, setDias] = useState(cita.dias || "");
   const [descripcion, setDescripcion] = useState(cita.descripcion || "");
-  const [activo, setActivo] = useState(cita.activo !== undefined ? cita.activo : true);
-  const [disponible, setDisponible] = useState(cita.disponible !== undefined ? cita.disponible : true);
-  const [idPaciente, setIdPaciente] = useState(cita.idPaciente || "");
-  const [idMedico, setIdMedico] = useState(cita.idMedico || "");
+  const [activo, setActivo] = useState(
+    cita.activo !== undefined ? cita.activo : true
+  );
+  const [disponible, setDisponible] = useState(
+    cita.disponible !== undefined ? cita.disponible : true
+  );
+  const [idPaciente, setIdPaciente] = useState(
+    cita.idPaciente?.toString() || ""
+  );
+  const [idMedico, setIdMedico] = useState(cita.idMedico?.toString() || "");
   const [loading, setLoading] = useState(false);
   const [errors, setErrors] = useState({});
 
@@ -37,7 +52,7 @@ export default function EditarCitas() {
 
   const handleGuardar = async () => {
     const nuevosErrores = {};
-    
+
     if (!nombre) nuevosErrores.nombre = "El nombre es obligatorio";
     if (!fecha) nuevosErrores.fecha = "La fecha es obligatoria";
     else if (!validarFecha(fecha)) nuevosErrores.fecha = "Formato DD/MM/AAAA";
@@ -51,7 +66,10 @@ export default function EditarCitas() {
 
     if (Object.keys(nuevosErrores).length > 0) {
       setErrors(nuevosErrores);
-      Alert.alert("Error", "Por favor complete todos los campos requeridos correctamente");
+      Alert.alert(
+        "Error",
+        "Por favor complete todos los campos requeridos correctamente"
+      );
       return;
     }
 
@@ -66,24 +84,25 @@ export default function EditarCitas() {
         descripcion,
         activo,
         disponible,
-        idPaciente,
-        idMedico
+        idPaciente: parseInt(idPaciente),
+        idMedico: parseInt(idMedico),
       };
 
-      const result = esEdicion 
+      const result = esEdicion
         ? await editarCitas(cita.id, datosCita)
         : await crearCitas(datosCita);
 
       if (result.success) {
-        Alert.alert(
-          "Éxito",
-          esEdicion ? "Cita actualizada" : "Cita creada",
-          [{ text: "OK", onPress: () => navigation.goBack() }]
-        );
+        Alert.alert("Éxito", esEdicion ? "Cita actualizada" : "Cita creada", [
+          { text: "OK", onPress: () => navigation.goBack() },
+        ]);
       } else {
         if (result.errors) {
           setErrors(result.errors);
-          Alert.alert("Error", "Por favor corrija los errores en el formulario");
+          Alert.alert(
+            "Error",
+            "Por favor corrija los errores en el formulario"
+          );
         } else {
           Alert.alert("Error", result.message || "Error al guardar");
         }
@@ -97,12 +116,14 @@ export default function EditarCitas() {
 
   return (
     <View style={styles.container}>
-      <Text style={styles.titulo}>{esEdicion ? "Editar Cita" : "Nueva Cita"}</Text>
-      
+      <Text style={styles.titulo}>
+        {esEdicion ? "Editar Cita" : "Nueva Cita"}
+      </Text>
+
       <ScrollView contentContainerStyle={styles.scrollContent}>
         {/* Sección Información Básica */}
         <Text style={styles.sectionTitle}>Información Básica</Text>
-        
+
         <Text style={styles.label}>Nombre del Paciente *</Text>
         <TextInput
           style={[styles.input, errors.nombre && styles.inputError]}
@@ -111,11 +132,11 @@ export default function EditarCitas() {
           value={nombre}
           onChangeText={(text) => {
             setNombre(text);
-            setErrors({...errors, nombre: null});
+            setErrors({ ...errors, nombre: null });
           }}
         />
         {errors.nombre && <Text style={styles.errorText}>{errors.nombre}</Text>}
-        
+
         <Text style={styles.label}>ID Paciente *</Text>
         <TextInput
           style={[styles.input, errors.idPaciente && styles.inputError]}
@@ -124,12 +145,14 @@ export default function EditarCitas() {
           value={idPaciente}
           onChangeText={(text) => {
             setIdPaciente(text);
-            setErrors({...errors, idPaciente: null});
+            setErrors({ ...errors, idPaciente: null });
           }}
           keyboardType="numeric"
         />
-        {errors.idPaciente && <Text style={styles.errorText}>{errors.idPaciente}</Text>}
-        
+        {errors.idPaciente && (
+          <Text style={styles.errorText}>{errors.idPaciente}</Text>
+        )}
+
         <Text style={styles.label}>ID Médico *</Text>
         <TextInput
           style={[styles.input, errors.idMedico && styles.inputError]}
@@ -138,15 +161,17 @@ export default function EditarCitas() {
           value={idMedico}
           onChangeText={(text) => {
             setIdMedico(text);
-            setErrors({...errors, idMedico: null});
+            setErrors({ ...errors, idMedico: null });
           }}
           keyboardType="numeric"
         />
-        {errors.idMedico && <Text style={styles.errorText}>{errors.idMedico}</Text>}
+        {errors.idMedico && (
+          <Text style={styles.errorText}>{errors.idMedico}</Text>
+        )}
 
         {/* Sección Fecha y Horario */}
         <Text style={styles.sectionTitle}>Fecha y Horario</Text>
-        
+
         <Text style={styles.label}>Fecha * (DD/MM/AAAA)</Text>
         <TextInput
           style={[styles.input, errors.fecha && styles.inputError]}
@@ -155,7 +180,7 @@ export default function EditarCitas() {
           value={fecha}
           onChangeText={(text) => {
             setFecha(text);
-            setErrors({...errors, fecha: null});
+            setErrors({ ...errors, fecha: null });
           }}
         />
         {errors.fecha && <Text style={styles.errorText}>{errors.fecha}</Text>}
@@ -170,12 +195,14 @@ export default function EditarCitas() {
               value={horaIni}
               onChangeText={(text) => {
                 setHoraIni(text);
-                setErrors({...errors, horaIni: null});
+                setErrors({ ...errors, horaIni: null });
               }}
             />
-            {errors.horaIni && <Text style={styles.errorText}>{errors.horaIni}</Text>}
+            {errors.horaIni && (
+              <Text style={styles.errorText}>{errors.horaIni}</Text>
+            )}
           </View>
-          
+
           <View style={styles.timeInput}>
             <Text style={styles.label}>Hora Fin * (HH:MM)</Text>
             <TextInput
@@ -185,10 +212,12 @@ export default function EditarCitas() {
               value={horaFin}
               onChangeText={(text) => {
                 setHoraFin(text);
-                setErrors({...errors, horaFin: null});
+                setErrors({ ...errors, horaFin: null });
               }}
             />
-            {errors.horaFin && <Text style={styles.errorText}>{errors.horaFin}</Text>}
+            {errors.horaFin && (
+              <Text style={styles.errorText}>{errors.horaFin}</Text>
+            )}
           </View>
         </View>
 
@@ -200,14 +229,14 @@ export default function EditarCitas() {
           value={dias}
           onChangeText={(text) => {
             setDias(text);
-            setErrors({...errors, dias: null});
+            setErrors({ ...errors, dias: null });
           }}
         />
         {errors.dias && <Text style={styles.errorText}>{errors.dias}</Text>}
 
         {/* Sección Estado */}
         <Text style={styles.sectionTitle}>Estado</Text>
-        
+
         <View style={styles.switchContainer}>
           <Text style={styles.switchLabel}>Cita activa:</Text>
           <Switch
@@ -230,7 +259,7 @@ export default function EditarCitas() {
 
         {/* Sección Descripción */}
         <Text style={styles.sectionTitle}>Detalles Adicionales</Text>
-        
+
         <Text style={styles.label}>Descripción</Text>
         <TextInput
           style={[styles.input, styles.textArea]}
@@ -263,7 +292,7 @@ export default function EditarCitas() {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    backgroundColor: '#f5f9ff',
+    backgroundColor: "#f5f9ff",
   },
   scrollContent: {
     padding: 20,
@@ -271,97 +300,97 @@ const styles = StyleSheet.create({
   },
   titulo: {
     fontSize: 24,
-    fontWeight: 'bold',
-    color: '#89CFF0',
-    textAlign: 'center',
+    fontWeight: "bold",
+    color: "#89CFF0",
+    textAlign: "center",
     marginVertical: 20,
-    textShadowColor: 'rgba(137, 207, 240, 0.5)',
+    textShadowColor: "rgba(137, 207, 240, 0.5)",
     textShadowOffset: { width: 0, height: 0 },
     textShadowRadius: 10,
   },
   sectionTitle: {
     fontSize: 18,
-    fontWeight: '600',
-    color: '#5D8BF4',
+    fontWeight: "600",
+    color: "#5D8BF4",
     marginTop: 15,
     marginBottom: 10,
     borderBottomWidth: 1,
-    borderBottomColor: '#B5EAD7',
+    borderBottomColor: "#B5EAD7",
     paddingBottom: 5,
   },
   label: {
     fontSize: 16,
-    color: '#555',
+    color: "#555",
     marginBottom: 8,
-    fontWeight: '500',
+    fontWeight: "500",
   },
   input: {
-    backgroundColor: '#fff',
+    backgroundColor: "#fff",
     borderWidth: 2,
-    borderColor: '#B5EAD7',
+    borderColor: "#B5EAD7",
     borderRadius: 8,
     padding: 15,
     marginBottom: 5,
     fontSize: 16,
-    color: '#555',
+    color: "#555",
   },
   inputError: {
-    borderColor: '#FF9AA2',
+    borderColor: "#FF9AA2",
   },
   textArea: {
     height: 120,
-    textAlignVertical: 'top',
+    textAlignVertical: "top",
     marginBottom: 20,
   },
   timeContainer: {
-    flexDirection: 'row',
-    justifyContent: 'space-between',
+    flexDirection: "row",
+    justifyContent: "space-between",
     marginBottom: 15,
   },
   timeInput: {
-    width: '48%',
+    width: "48%",
   },
   switchContainer: {
-    flexDirection: 'row',
-    alignItems: 'center',
-    justifyContent: 'space-between',
+    flexDirection: "row",
+    alignItems: "center",
+    justifyContent: "space-between",
     marginBottom: 15,
     paddingHorizontal: 10,
-    backgroundColor: '#fff',
+    backgroundColor: "#fff",
     borderRadius: 8,
     paddingVertical: 12,
-    borderColor: '#B5EAD7',
+    borderColor: "#B5EAD7",
     borderWidth: 2,
   },
   switchLabel: {
     fontSize: 16,
-    color: '#555',
+    color: "#555",
   },
   errorText: {
-    color: '#FF9AA2',
+    color: "#FF9AA2",
     fontSize: 14,
     marginBottom: 15,
     marginLeft: 5,
   },
   boton: {
-    backgroundColor: '#89CFF0',
+    backgroundColor: "#89CFF0",
     padding: 16,
     borderRadius: 8,
     margin: 20,
-    alignItems: 'center',
-    position: 'absolute',
+    alignItems: "center",
+    position: "absolute",
     bottom: 0,
     left: 20,
     right: 20,
-    shadowColor: 'rgba(137, 207, 240, 0.5)',
+    shadowColor: "rgba(137, 207, 240, 0.5)",
     shadowOffset: { width: 0, height: 4 },
     shadowOpacity: 0.6,
     shadowRadius: 8,
     elevation: 6,
   },
   botonTexto: {
-    color: '#fff',
+    color: "#fff",
     fontSize: 18,
-    fontWeight: '600',
+    fontWeight: "600",
   },
 });

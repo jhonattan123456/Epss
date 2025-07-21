@@ -63,7 +63,7 @@ export default function ListarEspecialidadScreen() {
     };
 
     const handleCrear = () => {
-        navigation.navigate("EditarEspecialidades"); // Corregido a singular
+        navigation.navigate("EditarEspecialidades"); 
     };
 
     if (loading) {
@@ -92,6 +92,7 @@ export default function ListarEspecialidadScreen() {
                     )}
                 />
             )}
+            
             <TouchableOpacity 
                 style={styles.botonCrear} 
                 onPress={handleCrear}
